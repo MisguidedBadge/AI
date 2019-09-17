@@ -1,0 +1,14 @@
+/* Libraries to be used in the code */
+#ifndef LIBRARY_H
+#define LIBRARY_H
+
+// Standard libraries referenced
+#include <iostream>
+#include <vector>
+#include "math.h"
+
+// User Defined libraries
+#include "Activation.h"
+
+
+#endif
