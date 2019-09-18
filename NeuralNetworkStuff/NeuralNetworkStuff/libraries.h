@@ -5,10 +5,12 @@
 // Standard libraries referenced
 #include <iostream>
 #include <vector>
+#include <stdio.h>      /* printf, scanf, puts, NULL */
 #include "math.h"
 
 // User Defined libraries
 #include "Activation.h"
+#include "Layer.h"
 
 
 #endif

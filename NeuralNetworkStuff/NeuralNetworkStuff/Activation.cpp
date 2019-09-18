@@ -1,7 +1,4 @@
-/*
-
-
-*/
+// Activation functions
 
 #include "Activation.h"
 

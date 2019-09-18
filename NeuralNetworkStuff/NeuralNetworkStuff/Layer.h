@@ -20,35 +20,45 @@ public:
 	// - Column is neuron index
 	// - matrix[ij] i = neuron j = index within
 	vector<vector<float>> weights;			// create a vector of weights
-	vector<vector<float>> Z;						// sum(weight*input) + bias
-	vector<vector<float>> outputs;			// outputs of the layer
 	vector<vector<float>> DZW;					// D(Z/W)	partial derivativ
-	vector<vector<float>> DLZ;					// D(L/Z)
-	vector<vector<float>> DCL;					// D(C/L)
-	int neurons;							// number of neurons in the layer
+	vector<float> DLZ;					// D(L/Z)
+	float DCL;					// D(C/L)
+	vector<float> inputs;
+	vector<float> Z;										// sum(weight*input) + bias
+	vector<float> outputs;							// outputs of the layer
 	int num_inputs;
+	int num_neurons;										// number of neurons in the layer
 	int num_outputs;
+	float learning_rate;
 
 	// Class methods (Public)
 
 	// constructor
-	Layer(int neurons,
-				int inputs,
-				void* Activation(float));
+	Layer  (int num_neurons,
+					vector<float> inputs, 
+          float Activation(float x),
+          float learningrate);
 
 	// destructor
 	~Layer();
 
-	void Initialize_Weights(int,int);	
-	void FeedForward ();			
+	void InitializeWeights(int,int);	
+	void FeedForward ();		
+	void BackPropagation(float target);	
 
 
 private:
 	// Properties
-	void Activate(float x);						//update outputs by activating Z (O)
+	float Activate(float x);						//update outputs by activating Z (O)
 	void WeightSum();						// Calculate the weighted sum (Z)
-	// methods (Private)
 
+	// activation 
+	void ComputeZ();
+	void ActivateZ();
+
+	// backpropagation
+	void OutputError(float target);
+	void ActivationDerivative();
 };
 
 
