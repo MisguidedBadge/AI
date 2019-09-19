@@ -22,7 +22,7 @@ public:
 	vector<vector<float>> weights;		// create a vector of weights
 	vector<vector<float>> DZW;			// D(Z/W)	partial derivativ
 	vector<float> DLZ;					// D(L/Z)
-	float DCL;							// D(C/L)
+	vector<float> DCL;							// D(C/L)
 	vector<float> inputs;
 	vector<float> Z;					// sum(weight*input) + bias
 	vector<float> outputs;				// outputs of the layer
