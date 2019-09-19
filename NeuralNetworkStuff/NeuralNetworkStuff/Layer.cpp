@@ -9,26 +9,34 @@
 // overloaded constructor
 Layer::Layer (int num_neurons,
               vector<float> inputs, 
-              float Activation(float x),
+              float  (*Activation)(float x),
               float learning_rate) {
   // define the number of inputs 
   this->inputs = inputs;
-  this->num_inputs = inputs.size;
+  this->num_inputs = inputs.size();
   this->num_neurons = num_neurons;
+  this->num_outputs = num_neurons;
   this->learning_rate = learning_rate;
-  
+  // Preallocate vector size
+  this->weights.resize(num_neurons, vector<float>(num_inputs, 0));
+  this->Z.resize(num_neurons);
+  this->outputs.resize(num_neurons);
+  this->error = 0.0;
+  this->DCL = 0;
+  this->DZW.resize(num_neurons, vector<float>(num_inputs, 0));
+  this->DLZ.resize(num_neurons);
   // set up our activation function for the layer
   this->Activate = Activation;
 }
 
 
 Layer::~Layer() {
-  this->weights.erase;
-  this->DZW.erase;
-  this->DLZ.erase;
-  this->inputs.erase;
-  this->Z.erase;
-  this->outputs.erase;
+  this->weights.shrink_to_fit();
+  this->DZW.shrink_to_fit();
+  this->DLZ.shrink_to_fit();
+  this->inputs.shrink_to_fit();
+  this->Z.shrink_to_fit();
+  this->outputs.shrink_to_fit();
 }
 
 // initialize weights to random values
@@ -43,7 +51,7 @@ void Layer::InitializeWeights(int inputs, int neurons) {
 // instantiate layer workflow from input to output
 void Layer::FeedForward () {
   this->ComputeZ();
-  this->Activate();
+  this->ActivateZ();
 }
 
 void Layer::ComputeZ() {
@@ -53,8 +61,8 @@ void Layer::ComputeZ() {
 
   // cycling through the neurons and the inputs
   // computing Z
-  for (int i = 0; i < this->weights.size; i++) {
-    for (int j = 0; j < this->weights[i].size; j++) {
+  for (int i = 0; i < this->weights.size(); i++) {
+    for (int j = 0; j < this->weights[i].size(); j++) {
       this->Z[i] += this->weights[i][j] * this->inputs[j];
     }
   }
@@ -67,33 +75,34 @@ void Layer::ActivateZ() {
   }
 }
 
-void Layer::BackPropagation(float target) {
-  OutputError(target);
-  ActivationDerivative();
+void Layer::BackPropagation(vector<float> target) {
+  this->OutputError(target);
+  this->ActivationDerivative();
 
   // determining the weight error
-  for (int i = 0; i < this->weights.size; i++)  {
-    for (int j = 0; j < this->weights[i].size; j++) {
+  for (int i = 0; i < this->weights.size(); i++)  {
+    for (int j = 0; j < this->weights[i].size(); j++) {
       this->DZW[i][j] = this->DCL * this->DLZ[i] * inputs[i];
       // determining what value we need to change the weight
       this->weights[i][j] -= this->learning_rate * this->DZW[i][j];
-    }
+	  //cout << "Weight: " << weights[i][j] << endl;
+	}
   }
 }
 
 // OutputError = Output - Target
-void Layer::OutputError(float target) {
-  int error = 0;
+void Layer::OutputError(vector<float> target) {
+  this->error = 0.0;
 
   for (int i = 0; i < this->num_outputs; i++)
-    error += this->outputs[i] - target;
+    this->error += this->outputs[i] - target[i];
 
-  this->DCL = error / this->num_outputs;
+  this->DCL = this->error / this->num_outputs;
 }
 
 // ActivationDerivative = Derivative Activation Function passing Z
 void Layer::ActivationDerivative () {
   
   for (int i = 0; i < num_neurons; i++) 
-    this->DLZ[i] = DRelu(this->Z[i]);
+    this->DLZ[i] = DSigmoid(this->Z[i]);
 }

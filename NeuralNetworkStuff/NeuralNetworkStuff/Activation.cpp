@@ -24,7 +24,7 @@ float Relu(float x)
 // derivative of sigmoid
 float DSigmoid(float x)
 {
-	return x * (1 - x);
+	return Sigmoid(x) * (1 - Sigmoid(x));
 }
 
 // derivative of Relu
