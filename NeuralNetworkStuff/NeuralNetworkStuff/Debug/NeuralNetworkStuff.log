@@ -1,14 +1,14 @@
 ﻿  Main.cpp
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(18): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(21): warning C4305: 'initializing': truncation from 'double' to '_Ty'
-          with
-          [
-              _Ty=float
-          ]
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(22): warning C4305: 'initializing': truncation from 'double' to '_Ty'
-          with
-          [
-              _Ty=float
-          ]
-  NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\Debug\NeuralNetworkStuff.exe
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(13,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(16,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305: 'initializing': truncation from 'double' to '_Ty'
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         with
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         [
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:             _Ty=float
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         ]
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,37): warning C4305: 'initializing': truncation from 'double' to '_Ty'
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,37): warning C4305:         with
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,37): warning C4305:         [
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,37): warning C4305:             _Ty=float
+C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,37): warning C4305:         ]
+  NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\Project\AI\NeuralNetworkStuff\Debug\NeuralNetworkStuff.exe

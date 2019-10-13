@@ -11,6 +11,8 @@
 // User Defined libraries
 #include "Activation.h"
 #include "Layer.h"
-
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <fstream>
 
 #endif
