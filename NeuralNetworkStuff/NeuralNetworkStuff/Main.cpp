@@ -17,7 +17,7 @@ int main()
 
 	// Input and Output Vectors
 	vector<float> inputs = {0.24, .46};
-	vector<float> targets = { 7.90, 189};
+	vector<float> targets = { 0.90, 189};
 
 	// Layer Definition
 	Layer* hidden2 = new Layer(4, inputs, 2, Relu, alpha);
