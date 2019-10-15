@@ -1,4 +1,4 @@
-// Activation functions
+// Activation functions to be used in layers
 
 #include "Activation.h"
 

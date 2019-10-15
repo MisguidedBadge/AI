@@ -17,7 +17,7 @@ int main()
 
 	// Input and Output Vectors
 	vector<float> inputs = {0.24, .46};
-	vector<float> targets = { 0.90, 0.65};
+	vector<float> targets = { 1.90, 0.65};
 
 	// Layer Definition
 	Layer* hidden2 = new Layer(4, inputs, 2, Relu, alpha);
@@ -46,7 +46,7 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-		//cout << "layer error: " << output_layer->error << endl;
+		cout << "layer error: " << output_layer->error << endl;
 		testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}

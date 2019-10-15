@@ -1,7 +1,7 @@
 a = csvread('test_2Layer.dat',0,0);
 %b = csvread('test_1Layer.dat',0,0);
 c  = a(:,1)';
-t = 1:1:300;
+t = 1:1:30000;
 
 subplot(2,3,1);
 hold on
