@@ -39,7 +39,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = (float)((rand()%100)/100); //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%100)))/100.00; //rand()%6 + 1;
     }
   }
 }

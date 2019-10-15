@@ -124,11 +124,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Activation.h" />
+    <ClInclude Include="ConvolutionFilter.h" />
     <ClInclude Include="libraries.h" />
     <ClInclude Include="Layer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Activation.cpp" />
+    <ClCompile Include="ConvolutionFilter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Layer.cpp" />
   </ItemGroup>
