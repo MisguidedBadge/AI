@@ -7,12 +7,13 @@
 #include <vector>
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include "math.h"
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <fstream>
 
 // User Defined libraries
 #include "Activation.h"
 #include "Layer.h"
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-#include <fstream>
+#include "ConvolutionFilter.h"
 
 #endif

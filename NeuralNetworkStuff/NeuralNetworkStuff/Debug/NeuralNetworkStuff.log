@@ -1,14 +1,4 @@
-﻿  Main.cpp
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(13,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(16,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305: 'initializing': truncation from 'double' to '_Ty'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         with
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         [
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:             _Ty=float
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(19,35): warning C4305:         ]
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,38): warning C4305: 'initializing': truncation from 'double' to '_Ty'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,38): warning C4305:         with
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,38): warning C4305:         [
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,38): warning C4305:             _Ty=float
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(20,38): warning C4305:         ]
+﻿  ConvolutionFilter.cpp
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(13,9): warning C4101: 'tsize': unreferenced local variable
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(13,6): warning C4101: 'i': unreferenced local variable
   NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\Debug\NeuralNetworkStuff.exe

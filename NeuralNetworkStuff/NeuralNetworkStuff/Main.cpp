@@ -15,43 +15,51 @@ int main()
 	testfile.open("test_2Layer.dat");
 	float alpha = 0.001;
 
-	// Input and Output Vectors
-	vector<float> inputs = {0.24, .46};
-	vector<float> targets = { 1.90, 0.65};
+	// CNN Initialize
+	vector<vector<float>> input = { { 1, 1, 1 } , {2, 2, 2}, { 3, 3, 3 }};
 
-	// Layer Definition
-	Layer* hidden2 = new Layer(4, inputs, 2, Relu, alpha);
-	Layer* hidden1 = new Layer(2, hidden2->outputs, 2, Relu, alpha);
-	Layer* output_layer = new Layer(2, hidden1->outputs, 2, Relu , alpha);
-	
-	// Weight init
-	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(2, 2);
-	hidden1->InitializeWeights(4, 2);
-	hidden2->InitializeWeights(2, 4);
-	weights = output_layer->weights;
-	
-	
-	for (int i = 0; i < 30000 ; i++) {
-		// Feed Forward
-		hidden2->FeedForward(inputs);
-		hidden1->FeedForward(hidden2->outputs);
-		output_layer->FeedForward(hidden1->outputs);
-		// Back Propagation
-		output_layer->BackPropagation(targets);
-		hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
-		hidden2->BackPropagation(hidden1->weights, hidden1->DCZ);
-		// Update Layer Weights
-		hidden2->UpdateWeights();
-		hidden1->UpdateWeights();
-		output_layer->UpdateWeights();
-		// Print Error
-		cout << "layer error: " << output_layer->error << endl;
-		testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
-		//printf("Test \n");
-	}
-	cout << "layer error: " << output_layer->error << endl;
-	testfile.close();
+	// Input and Output Vectors
+	//vector<float> inputs = {0.24, .46};
+	//vector<float> targets = { 1.90, 0.65};
+
+	// CNN
+	ConvolutionFilter* cnn = new ConvolutionFilter(input, 1, 2, Relu, 0.01);
+	cnn->InitializeKernel(1, 2);
+
+	// Fully Connected Layers
+	//// Layer Definition
+	//Layer* hidden2 = new Layer(4, inputs, 2, Relu, alpha);
+	//Layer* hidden1 = new Layer(2, hidden2->outputs, 2, Relu, alpha);
+	//Layer* output_layer = new Layer(2, hidden1->outputs, 2, Relu , alpha);
+	//
+	//// Weight init
+	//vector<vector<float>> weights, weights2;
+	//output_layer->InitializeWeights(2, 2);
+	//hidden1->InitializeWeights(4, 2);
+	//hidden2->InitializeWeights(2, 4);
+	//weights = output_layer->weights;
+	//
+	//
+	//for (int i = 0; i < 30000 ; i++) {
+	//	// Feed Forward
+	//	hidden2->FeedForward(inputs);
+	//	hidden1->FeedForward(hidden2->outputs);
+	//	output_layer->FeedForward(hidden1->outputs);
+	//	// Back Propagation
+	//	output_layer->BackPropagation(targets);
+	//	hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
+	//	hidden2->BackPropagation(hidden1->weights, hidden1->DCZ);
+	//	// Update Layer Weights
+	//	hidden2->UpdateWeights();
+	//	hidden1->UpdateWeights();
+	//	output_layer->UpdateWeights();
+	//	// Print Error
+	//	cout << "layer error: " << output_layer->error << endl;
+	//	testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
+	//	//printf("Test \n");
+	//}
+	//cout << "layer error: " << output_layer->error << endl;
+	//testfile.close();
 
 
 
