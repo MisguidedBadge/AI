@@ -9,23 +9,41 @@
 
 int main()
 {
+	// Network Variables
+	float alpha	= 0.001;
+	int height	= 0;		// Image Height
+	int width	= 0;		// Image width
+	int nk1		= 0;		// Number of Kernels each cnn layer
+	int ks1		= 0;		// Kernel Sizes of each layer
+
 	/* initialize random seed: */
 	srand(time(NULL));
 	ofstream testfile;
 	testfile.open("test_2Layer.dat");
-	float alpha = 0.001;
+	
 
 	// CNN Initialize
-	vector<vector<float>> input = { { 1, 1, 1 } , {2, 2, 2}, { 3, 3, 3 }};
+	// example Image
+	vector<vector<float>> input;
+	input.resize(2);
+	vector<float> R = { 1, 1, 1 , 2, 2, 2, 3, 3, 3 };
+	vector<float> G = { 2, 2, 2, 1, 1, 1, 4, 4, 4 };
+	input[0] = R;
+	input[1] = G;
+	//vector<float> input = { 1,1,1,1,1,2,2,2,2,2 };
+	height	= 3;
+	width	= 3;
+	nk1		= 1;
+	ks1		= 4;
+
+	// CNN RGB
+	ConvolutionFilter* cnn = new ConvolutionFilter(2, height, width, 1, 2, Relu, alpha);
+	cnn->InitializeKernel();
+	cnn->LoadImage(input);
 
 	// Input and Output Vectors
 	//vector<float> inputs = {0.24, .46};
 	//vector<float> targets = { 1.90, 0.65};
-
-	// CNN
-	ConvolutionFilter* cnn = new ConvolutionFilter(input, 1, 2, Relu, 0.01);
-	cnn->InitializeKernel(1, 2);
-
 	// Fully Connected Layers
 	//// Layer Definition
 	//Layer* hidden2 = new Layer(4, inputs, 2, Relu, alpha);

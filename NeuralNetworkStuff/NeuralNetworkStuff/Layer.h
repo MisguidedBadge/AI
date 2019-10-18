@@ -13,12 +13,13 @@ using namespace std;
 class Layer
 {
 public:
-	// Class properties
-	// layer has 2 dimensional view of values
-	// - allows for matrix computation
-	// - Row represents the selected neuron
-	// - Column is neuron index
-	// - matrix[ij] i = neuron j = index within
+	/* Class properties
+	 - layer has 2 dimensional view of values
+	 - allows for matrix computation
+	 - Row represents the selected neuron
+	 - Column is neuron index
+	 - matrix[ij] i = neuron j = index within
+	*/
 	vector<vector<float>> weights;		// create a vector of weights
 	vector<vector<float>> DCW;			// D(C/W)	Weight derivative
 	vector<float> DLZ;					// D(L/Z)
@@ -31,7 +32,7 @@ public:
 	int num_outputs;
 	float learning_rate;
 	float error;
-	// Class methods (Public)
+	/* Class Initial Methods (Public) */
 	// constructor
 	Layer (int num_neurons,
 		  vector<float> inputs,
@@ -42,10 +43,13 @@ public:
 	// destructor
 	~Layer();
 
+	/* Class Methods (Public)*/
 	// Initialize weights to random values
 	void InitializeWeights(int,int);	
+	// Load inputs into network
+	void LoadInput(vector<float> inputs);
 	// Feed input data and go through network
-	void FeedForward (vector<float> inputs);
+	void FeedForward();
 	// Backpropagate to Output and hidden layers
 	void BackPropagation(vector<float> target);
 	void BackPropagation(vector<vector<float>> weights, vector<float> neuron_error);
@@ -55,14 +59,13 @@ public:
 private:
 	// Properties
 	float (*Activate)(float x);						//update outputs by activating Z (O)
-	//void WeightSum();						// Calculate the weighted sum (Z)
 
+	/* Class Methods (Private)*/
 	// activation 
 	void ComputeZ();
 	void ActivateZ();
 
 	// backpropagation
-	// Error for the Neuron D(C/Z)
 	void LayerError(vector<float> target);
 	void LayerError(vector<vector<float>> weights, vector<float> neuron_error);
 

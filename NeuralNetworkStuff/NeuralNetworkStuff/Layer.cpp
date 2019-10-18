@@ -1,7 +1,10 @@
 #include "Layer.h"
 
 
-// overloaded constructor
+/* Constructor
+- Input: number of neurons, Input, Outputs, Activation Function, Learning Rate
+- Setup vectors adn variables
+*/
 Layer::Layer(int num_neurons,
 			  vector<float> inputs,
 			  int outputs,
@@ -25,7 +28,9 @@ Layer::Layer(int num_neurons,
   this->Activate = Activation;
 }
 
-
+/* Layer Destructor
+- Vectors shrink in Heap until gone
+*/
 Layer::~Layer() {
   this->weights.shrink_to_fit();
   this->DCW.shrink_to_fit();
@@ -35,7 +40,9 @@ Layer::~Layer() {
   this->outputs.shrink_to_fit();
 }
 
-// initialize weights to random values
+/* Initialize Weights
+- Initialize fully connected network weights to random values
+*/
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
@@ -44,13 +51,25 @@ void Layer::InitializeWeights(int inputs, int neurons) {
   }
 }
 
-// instantiate layer workflow from input to output
-void Layer::FeedForward (vector<float> inputs) {
-  this->inputs = inputs;
+/* Load Input
+- Reloads input each time before feed-forward
+*/
+void Layer::LoadInput(vector<float> inputs)
+{
+	this->inputs = inputs;
+}
+
+/* Feed Forward 
+-	instantiate layer workflow from input to output
+*/
+void Layer::FeedForward () {
   this->ComputeZ();
   this->ActivateZ();
 }
 
+/* Compute the Z value
+- Z = w*i + w*i + ..... b
+*/
 void Layer::ComputeZ() {
   // zero Z vector
   for (int i = 0; i < this->num_neurons; i++)
@@ -117,7 +136,7 @@ void Layer::BackPropagation(vector<vector<float>> weights, vector<float> neuron_
 }
 
 /* Update Weights
-	Update Layer Weights
+- Update Layer Weights
 */
 void Layer::UpdateWeights(){
 	for (int i = 0; i < this->weights.size(); i++) {
@@ -127,9 +146,10 @@ void Layer::UpdateWeights(){
 	}
 }
 
-
-// OutputError = Output - Target
-// Overall output will have N neurons for N outputs
+/* Layer Error for output
+- OutputError = Output - Target
+- Overall output will have N neurons for N outputs
+*/
 void Layer::LayerError(vector<float> target) {
   this->error = 0.0;
 
@@ -141,9 +161,10 @@ void Layer::LayerError(vector<float> target) {
   }
 }
 
-// LayerError
-// Hidden Layer Error
-// Error is determined by (Error = D(C/Z)) (Error * Weight)
+/* LayerError
+- Hidden Layer Error
+- Error is determined by (Error = D(C/Z)) (Error * Weight)
+*/
 void Layer::LayerError(vector<vector<float>> weights, vector<float> neuron_error) {
 	this->error = 0.0;
 	float sum = 0;

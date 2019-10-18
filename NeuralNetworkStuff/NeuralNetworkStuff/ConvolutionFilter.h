@@ -8,20 +8,28 @@ using namespace std;
 	- Convolutions start with Randomized kernels N matrices of MxM size
 	- 
 */
-typedef vector<vector<float>> kernel;	// Kernel matrix
+typedef vector<vector<float>>	kernel_array;		// Array of kernels
 class ConvolutionFilter
 {
 public:
 	// Class properties
-	vector<kernel>	kernel_array;		// Array of kernels
-	vector<vector<float>>	outputs;	// Activation Function of convolutional filter
-	vector<vector<float>>	input;		// Input Matrix
-	int		num_kernels;				// 
+	vector<kernel_array> kernels;
+	vector<vector<float>>	output;			// Activation Function of convolutional filter
+	vector<vector<float>>	input;				// Input Matrix
+	int		channels;					// number of channels for the input
+	int		height;						// image height
+	int		width;						// image width
+	int		num_filters;				//
+	int		kernel_tsize;				// total kernel size Ex. 3x3 = 9
+	int		kernel_size;				// Kernel size Ex. 3
+	int		border;						// border size
 	float	learning_rate;				// 
-	int		kernel_size;
 	float	error;						// Error value computed
 	// Constructor
-	ConvolutionFilter(vector<vector<float>> input,
+	ConvolutionFilter(
+					int channels,
+					int height,
+					int width,
 					int num_kernels,
 					int kernel_size,
 					float(*Activation)(float x),
@@ -29,17 +37,21 @@ public:
 	// Destructor
 	~ConvolutionFilter();
 	// Initialize Kernel Values to random values
-	void InitializeKernel(int num_kernels, int kernel_size);
+	void InitializeKernel();
+	// Load Input image into class
+	void LoadImage(vector<vector<float>> input);
+
+	// Feed network values forward
+	void FeedForward();
 private:
 	// Properties
 	float (*Activate)(float x);
-
-	// Activation
-	//void Convolve();
-
-	// backpropagation
-	// Error
-
+	// Perform Zero padding on the image
+	vector<float> ZeroPad(vector<float> image);
+	// Perform Convolution on the image
+	vector<float> Convolve(int filter);
+	// Dot Product
+	float Dot(int filter, int channel, int height, int width);
 };
 
 #endif

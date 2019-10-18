@@ -1,4 +1,3 @@
 ﻿  ConvolutionFilter.cpp
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(13,9): warning C4101: 'tsize': unreferenced local variable
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(13,6): warning C4101: 'i': unreferenced local variable
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(17,9): warning C4101: 'tsize': unreferenced local variable
   NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\Debug\NeuralNetworkStuff.exe
