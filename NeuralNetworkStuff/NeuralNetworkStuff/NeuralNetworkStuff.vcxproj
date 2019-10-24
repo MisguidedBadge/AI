@@ -127,12 +127,14 @@
     <ClInclude Include="ConvolutionFilter.h" />
     <ClInclude Include="libraries.h" />
     <ClInclude Include="Layer.h" />
+    <ClInclude Include="Pool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Activation.cpp" />
     <ClCompile Include="ConvolutionFilter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="Pool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

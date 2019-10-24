@@ -22,6 +22,8 @@ public:
 	int		num_filters;				//
 	int		kernel_tsize;				// total kernel size Ex. 3x3 = 9
 	int		kernel_size;				// Kernel size Ex. 3
+	int		stride_x;
+	int		stride_y;
 	int		border;						// border size
 	float	learning_rate;				// 
 	float	error;						// Error value computed
@@ -32,6 +34,8 @@ public:
 					int width,
 					int num_kernels,
 					int kernel_size,
+					int stride_x,
+					int stride_y,
 					float(*Activation)(float x),
 					float learningrate);
 	// Destructor
@@ -43,6 +47,9 @@ public:
 
 	// Feed network values forward
 	void FeedForward();
+
+	// Return Output
+	vector<vector<float>> Output();
 private:
 	// Properties
 	float (*Activate)(float x);

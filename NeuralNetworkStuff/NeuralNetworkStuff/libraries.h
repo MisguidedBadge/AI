@@ -15,5 +15,7 @@
 #include "Activation.h"
 #include "Layer.h"
 #include "ConvolutionFilter.h"
+#include "Pool.h"
+
 
 #endif
