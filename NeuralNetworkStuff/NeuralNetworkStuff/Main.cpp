@@ -9,6 +9,7 @@
 #include <time.h>       /* time */
 #include <fstream>
 #include <iostream>
+#include <cmath>
 
 int main()
 {
@@ -68,8 +69,16 @@ int main()
     }
     
     int i = 0;
+    double RMS = 0;
+    
     for(auto iter = out_error.begin(); iter != out_error.end() ; iter++, i++)
+    {
         std::cout<<"Layer Error "<<i<<": "<<*iter<<std::endl;
+        RMS = pow(*iter, 2);
+    }
+    
+    std::cout<<"RMS Error: "<<(RMS = sqrt(RMS/i))*RMS<<std::endl;
+    
 
 
 
