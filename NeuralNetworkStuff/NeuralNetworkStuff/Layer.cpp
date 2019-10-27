@@ -83,8 +83,8 @@ void Layer::ActivateZ() {
 	Output: None
 	Calculate Error and Backpropagate it to change weights
 */
-void Layer::BackPropagation(vector<float> target) {
-  this->LayerError(target);
+void Layer::BackPropagation(vector<float> & error) {
+  this->LayerError(error);
 
   // determining the weight error
   for (int i = 0; i < this->weights.size(); i++)  {
@@ -130,14 +130,15 @@ void Layer::UpdateWeights(){
 
 // OutputError = Output - Target
 // Overall output will have N neurons for N outputs
-void Layer::LayerError(vector<float> target) {
+
+void Layer::LayerError(vector<float> & error) {
   this->error = 0.0;
 
   for (int i = 0; i < this->num_outputs; i++)
   {
 	  // Compute layer error
-	  this->DCZ[i] = (this->outputs[i] - target[i]) * DRelu(this->Z[i]);
-	  this->error += (this->outputs[i] - target[i]);
+	  this->DCZ[i] = (error[i]) * DRelu(this->Z[i]);
+	  //this->error += (this->outputs[i] - target[i]);
   }
 }
 

@@ -9,6 +9,7 @@
 #include <time.h>       /* time */
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <cmath>
 
 int main()
@@ -21,9 +22,9 @@ int main()
     vector<float> out_error;
     
     int j = 0;
-    for(auto inp_iter = inputs.begin(), target_iter = targets.begin();
-        inp_iter != inputs.end(), target_iter != targets.end();
-        inp_iter++, target_iter++, j++ )
+    //for(auto inp_iter = inputs.begin(), target_iter = targets.begin();
+    //    inp_iter != inputs.end(), target_iter != targets.end();
+    //    inp_iter++, target_iter++, j++ )
     {
         srand(time(NULL));
         ofstream testfile;
@@ -33,7 +34,7 @@ int main()
         float alpha = 0.001;
         
         // Layer Definition
-        Layer* hidden2 = new Layer(4, *inp_iter, 18, Relu, alpha);
+        Layer* hidden2 = new Layer(4, inputs[0], 18, Relu, alpha);
         Layer* hidden1 = new Layer(18, hidden2->outputs, 2, Relu, alpha);
         Layer* output_layer = new Layer(2, hidden1->outputs, 2, Relu , alpha);
         
@@ -45,13 +46,32 @@ int main()
         weights = output_layer->weights;
         
         
-        for (int i = 0; i < 300 ; i++) {
+        vector <float> error_RMS(2, 0);
+        
+        for (int i = 0; i < 3000 ; i++) {
             // Feed Forward
-            hidden2->FeedForward(*inp_iter);
-            hidden1->FeedForward(hidden2->outputs);
-            output_layer->FeedForward(hidden1->outputs);
+            error_RMS.clear();
+            //error_RMS.resize(2);            
+            
+            for(auto inp_iter = inputs.begin(), target_iter = targets.begin();
+                inp_iter != inputs.end(), target_iter != targets.end();
+                inp_iter++, target_iter++)
+            {
+                hidden2->FeedForward(*inp_iter);
+                hidden1->FeedForward(hidden2->outputs);
+                output_layer->FeedForward(hidden1->outputs);
+         
+                
+                for(int k = 0; k<output_layer->num_outputs; k++)
+                {
+                    error_RMS[k] += output_layer->outputs[k] - (*target_iter)[k];
+                }
+            }
+            
+            for(int k = 0; k<output_layer->num_outputs; k++)
+                error_RMS[k] /= output_layer->num_outputs;
             // Back Propagation
-            output_layer->BackPropagation(*target_iter);
+            output_layer->BackPropagation(error_RMS);
             hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
             hidden2->BackPropagation(hidden1->weights, hidden1->DCZ);
             // Update Layer Weights
@@ -60,6 +80,9 @@ int main()
             output_layer->UpdateWeights();
             // Print Error
 
+            for(int k = 0; k<output_layer->num_outputs; k++)
+                std::cout<<"Error: "<<error_RMS[k]<<std::endl;
+            
             testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
             //printf("Test \n");
         }
@@ -78,8 +101,6 @@ int main()
     }
     
     std::cout<<"RMS Error: "<<(RMS = sqrt(RMS/i))<<std::endl;
-
-
-
+    
 	return 0;
 }

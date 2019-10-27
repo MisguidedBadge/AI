@@ -47,10 +47,11 @@ public:
 	// Feed input data and go through network
 	void FeedForward (vector<float> inputs);
 	// Backpropagate to Output and hidden layers
-	void BackPropagation(vector<float> target);
+	void BackPropagation(vector<float> & error);
 	void BackPropagation(vector<vector<float>> weights, vector<float> neuron_error);
 	// Update weights after error calculation
 	void UpdateWeights();
+    
 
 private:
 	// Properties
@@ -63,7 +64,7 @@ private:
 
 	// backpropagation
 	// Error for the Neuron D(C/Z)
-	void LayerError(vector<float> target);
+    void LayerError(vector<float> & error);
 	void LayerError(vector<vector<float>> weights, vector<float> neuron_error);
 
 };
