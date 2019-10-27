@@ -77,8 +77,7 @@ int main()
         RMS = pow(*iter, 2);
     }
     
-    std::cout<<"RMS Error: "<<(RMS = sqrt(RMS/i))*RMS<<std::endl;
-    
+    std::cout<<"RMS Error: "<<(RMS = sqrt(RMS/i))<<std::endl;
 
 
 
