@@ -15,17 +15,18 @@ int main()
 	/* initialize random seed: */
 
 	// Input and Output Vectors
-    vactor<vector<float>> inputs = {{0.24, .46}, {0.35, 0.78}};
-    vector<vector<float>> targets = {{ 0.90, 0.31}, {0.89, 0.25}};
+    vector< vector<float> > inputs = {{0.24, .46}, {0.35, 0.78}};
+    vector< vector<float> > targets = {{ 0.90, 0.31}, {0.89, 0.25}};
+    vector<float> out_error;
 
     for(int j = 0; j < 2; j++)
     {
         srand(time(NULL));
         ofstream testfile;
-        std::string out_file = "test_2Layer" + std::to_string(i) + ".dat";
+        std::string out_file = "test_2Layer" + std::to_string(j) + ".dat";
         
         testfile.open(out_file);
-        float alpha = 0.000001;
+        float alpha = 0.001;
         
         // Layer Definition
         Layer* hidden2 = new Layer(4, inputs[j], 18, Relu, alpha);
@@ -33,7 +34,7 @@ int main()
         Layer* output_layer = new Layer(2, hidden1->outputs, 2, Relu , alpha);
         
         // Weight init
-        vector<vector<float>> weights, weights2;
+        vector< vector<float> > weights, weights2;
         output_layer->InitializeWeights(18, 2);
         hidden1->InitializeWeights(4, 18);
         hidden2->InitializeWeights(2, 4);
@@ -58,9 +59,14 @@ int main()
             testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
             //printf("Test \n");
         }
-        cout << "layer error: " << output_layer->error << endl;
+        //cout << "layer error: " << output_layer->error << endl;
+        out_error.push_back(output_layer->error);
         testfile.close();
     }
+    
+    int i = 0;
+    for(auto iter = out_error.begin(); iter != out_error.end() ; iter++, i++)
+        std::cout<<"Layer Error "<<i<<": "<<*iter<<std::endl;
 
 
 

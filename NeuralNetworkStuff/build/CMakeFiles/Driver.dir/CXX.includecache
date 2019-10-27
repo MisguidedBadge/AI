@@ -6,19 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Activation.cpp
-Activation.h
-/Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Activation.h
-
 /Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Activation.h
 libraries.h
 /Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/libraries.h
-
-/Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Layer.cpp
-Layer.h
-/Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Layer.h
-Math.h
--
 
 /Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/Layer.h
 libraries.h
@@ -32,6 +22,8 @@ stdlib.h
 time.h
 -
 fstream
+-
+iostream
 -
 
 /Users/varunyadav/GitHubRepos/AI/NeuralNetworkStuff/NeuralNetworkStuff/libraries.h
