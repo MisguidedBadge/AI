@@ -18,8 +18,11 @@ int main()
     vector< vector<float> > inputs = {{0.24, .46}, {0.35, 0.78}};
     vector< vector<float> > targets = {{ 0.90, 0.31}, {0.89, 0.25}};
     vector<float> out_error;
-
-    for(int j = 0; j < 2; j++)
+    
+    int j = 0;
+    for(auto inp_iter = inputs.begin(), target_iter = targets.begin();
+        inp_iter != inputs.end(), target_iter != targets.end();
+        inp_iter++, target_iter++, j++ )
     {
         srand(time(NULL));
         ofstream testfile;
@@ -29,7 +32,7 @@ int main()
         float alpha = 0.001;
         
         // Layer Definition
-        Layer* hidden2 = new Layer(4, inputs[j], 18, Relu, alpha);
+        Layer* hidden2 = new Layer(4, *inp_iter, 18, Relu, alpha);
         Layer* hidden1 = new Layer(18, hidden2->outputs, 2, Relu, alpha);
         Layer* output_layer = new Layer(2, hidden1->outputs, 2, Relu , alpha);
         
@@ -43,11 +46,11 @@ int main()
         
         for (int i = 0; i < 300 ; i++) {
             // Feed Forward
-            hidden2->FeedForward(inputs[j]);
+            hidden2->FeedForward(*inp_iter);
             hidden1->FeedForward(hidden2->outputs);
             output_layer->FeedForward(hidden1->outputs);
             // Back Propagation
-            output_layer->BackPropagation(targets[j]);
+            output_layer->BackPropagation(*target_iter);
             hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
             hidden2->BackPropagation(hidden1->weights, hidden1->DCZ);
             // Update Layer Weights
