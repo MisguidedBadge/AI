@@ -68,7 +68,7 @@ void ConvolutionFilter::InitializeKernel()
 			// Kernel matrix
 			for (int k = 0; k < this->kernel_tsize; k++)
 			{
-				this->kernels[i][j][k] = (float)((rand() % 100 / 100.00));
+				this->kernels[i][j][k] = (float)((rand() % 100 / 10000.00));
 				//this->kernels[i][j][k] = 1;
 			}
 

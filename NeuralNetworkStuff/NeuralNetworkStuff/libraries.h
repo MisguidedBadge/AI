@@ -10,6 +10,9 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <fstream>
+#include <ppl.h>
+#include <concurrent_vector.h>
+
 
 // User Defined libraries
 #include "Activation.h"
@@ -17,5 +20,6 @@
 #include "ConvolutionFilter.h"
 #include "Pool.h"
 #include "opencv2/opencv.hpp"
+
 
 #endif

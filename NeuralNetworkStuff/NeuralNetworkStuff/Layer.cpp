@@ -46,7 +46,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = ((float)((rand()%100)))/100.00; //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%100)))/1000000.00; //rand()%6 + 1;
     }
   }
 }
@@ -125,25 +125,26 @@ void Layer::BackPropagation(vector<vector<float>> weights, vector<float> neuron_
 	this->LayerError(weights, neuron_error);
 
 	// determining the weight error
-	for (int i = 0; i < this->weights.size(); i++) {
+	concurrency::parallel_for(0, (int)this->weights.size(), [&](int i) {
 		for (int j = 0; j < this->weights[i].size(); j++) {
 			this->DCW[i][j] = this->DCZ[i] * inputs[j];
 			// determining what value we need to change the weight
 			//this->weights[i][j] -= this->learning_rate * this->DZW[i][j];
 			//cout << "Weight: " << weights[i][j] << endl;
 		}
-	}
+		});
 }
 
 /* Update Weights
 - Update Layer Weights
 */
 void Layer::UpdateWeights(){
-	for (int i = 0; i < this->weights.size(); i++) {
+	int i = 0;
+		concurrency::parallel_for(0, (int)this->weights.size(), [&](int i) {
 		for (int j = 0; j < this->weights[i].size(); j++) {
 			this->weights[i][j] -= this->learning_rate * this->DCW[i][j];
 		}
-	}
+	});
 }
 
 /* Layer Error for output

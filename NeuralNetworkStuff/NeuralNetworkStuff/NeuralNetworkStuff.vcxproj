@@ -95,7 +95,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>C:\Users\Peter\Desktop\AI\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world411.lib;opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world411d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,6 +141,10 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Pool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="I00000.jpg" />
+    <Image Include="I00976.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

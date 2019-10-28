@@ -10,7 +10,7 @@
 int main()
 {
 	// Network Variables
-	float alpha = 0.0001;
+	float alpha = 0.001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
 	int nk1 = 0;		// Number of Kernels each cnn layer
@@ -35,34 +35,29 @@ int main()
 
 	//images[i] = cv::imread(imageName, cv::IMREAD_COLOR);
 	cv::Mat matimage;
+	//vector<cv::Mat> matimage;
 	cv::Mat imageChannels[3];
-	matimage = cv::imread(imageName, cv::IMREAD_COLOR);
+	//for (int i = 0; i < 2; i++)
+	//{
+		matimage = cv::imread(imageName, cv::IMREAD_COLOR);
+		cv::split(matimage, imageChannels);
 
-	cv::split(matimage, imageChannels);
 
-	for (int i = 0; i < 3; i++)
-	{
-		cv::Mat binaryImage(imageChannels[i].size(), imageChannels[i].type());
-		for (int r = 0; r < matimage.rows; r++)
+		for (int j = 0; j < 3; j++)
 		{
-			for (int c = 0; c < matimage.cols; c++)
+			cv::Mat binaryImage(imageChannels[j].size(), imageChannels[j ].type());
+			for (int r = 0; r < matimage.rows; r++)
 			{
-				float pixel = imageChannels[i].at<uchar>(r, c);
+				for (int c = 0; c < matimage.cols; c++)
+				{
+					float pixel = imageChannels[j].at<uchar>(r, c);
 
-				input[i].insert(input[i].end(), pixel);
+					input[j].insert(input[j].end(), pixel);
 
+				}
 			}
 		}
-	}
-
-
-
-	//vector<float> R = { 1, 2, 3, 4, 5, 6, 7, 8 ,9, 10, 11, 12 ,13 ,14, 15, 16 };
-	//vector<float> G = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	//input[0] = R;
-	//input[1] = R;
-	//input[1] = G;
-	//vector<float> input = { 1,1,1,1,1,2,2,2,2,2 };
+	//}
 	num_channels = 3;
 	height = 480;
 	width = 640;
@@ -79,7 +74,7 @@ int main()
 
 	cnn->FeedForward();
 	image = cnn->Output();
-	image[0] = MaxPool(image[0], 2, height, width);
+	image[0] = MaxPool(image[0], 12, height, width);
 
 
 	// Input and Output Vectors
