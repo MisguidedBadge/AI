@@ -16,6 +16,6 @@
 #include "Layer.h"
 #include "ConvolutionFilter.h"
 #include "Pool.h"
-
+#include "opencv2/opencv.hpp"
 
 #endif

@@ -1,1 +1,17 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.Cpp.Platform.targets(67,5): error MSB8020: The build tools for v142 (Platform Toolset = 'v142') cannot be found. To build using the v142 build tools, please install v142 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
+﻿  Activation.cpp
+  ConvolutionFilter.cpp
+  Main.cpp
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(19,9): warning C4101: 'tsize': unreferenced local variable
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(13,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(30,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Layer.cpp
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(98,49): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(15,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Pool.cpp
+  Generating Code...
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         with
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         [
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:             _Ty=float
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         ]
+  NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\x64\Debug\NeuralNetworkStuff.exe
