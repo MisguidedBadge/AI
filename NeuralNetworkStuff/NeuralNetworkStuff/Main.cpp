@@ -78,7 +78,7 @@ int main()
 	for (int i = 0; i < image[0].size(); i++)
 	{
 		testfile << image[0][i] << ",";
-		if (k == width)
+		if (k == width - 1)
 		{
 			testfile << endl;
 			k = 0;
@@ -126,11 +126,11 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-		cout << "layer error: " << output_layer->error << endl;
+		//cout << "layer error: " << output_layer->error << endl;
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}
-	cout << "layer error: " << output_layer->error << endl;
+	//cout << "layer error: " << output_layer->error << endl;
 	testfile.close();
 
 
