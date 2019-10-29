@@ -74,6 +74,21 @@ int main()
 
 	cnn->FeedForward();
 	image = cnn->Output();
+	int k = 0;
+	for (int i = 0; i < image[0].size(); i++)
+	{
+		testfile << image[0][i] << ",";
+		if (k == width)
+		{
+			testfile << endl;
+			k = 0;
+		}
+		else
+		{
+			k++;
+		}
+			
+	}
 	image[0] = MaxPool(image[0], 12, height, width);
 
 
@@ -94,7 +109,7 @@ int main()
 	weights = output_layer->weights;
 
 
-	for (int i = 0; i < 30000; i++) {
+	for (int i = 0; i < 1; i++) {
 		// Feed Forward
 		hidden2->LoadInput(image[0]);
 		hidden2->FeedForward();
