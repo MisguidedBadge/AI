@@ -79,6 +79,23 @@ int main()
 
 	cnn->FeedForward();
 	image = cnn->Output();
+
+	int k = 0;
+	for (int i = 0; i < image[0][0].size(); i++)
+	{
+		testfile << image[0][0][i] << ",";
+		if (k == width)
+		{
+			testfile << endl;
+			k = 0;
+		}
+		else
+		{
+			k++;
+		}
+
+	}
+
 	image[0][0] = MaxPool(image[0][0], 12, height, width);
 
 

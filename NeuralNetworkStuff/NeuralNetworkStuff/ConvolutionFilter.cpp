@@ -71,8 +71,8 @@ void ConvolutionFilter::InitializeKernel()
 			// Kernel matrix
 			for (int k = 0; k < this->kernel_tsize; k++)
 			{
-				this->kernels[i][j][k] = (float)((rand() % 100 / 10000.00));
-				//this->kernels[i][j][k] = 1;
+				//this->kernels[i][j][k] = (float)((rand() % 100 / 10000.00));
+				this->kernels[i][j][k] = 1;
 			}
 
 		}
@@ -163,8 +163,6 @@ vector<float> ConvolutionFilter::Convolve(int batch, int filter)
 				// for each channel
 				for (i = 0; i < this->channels; i++)
 				{
-					if(j == 479 && k == 639)
-						std::cout << "J: " << j << "K: " << k << "i: " << i << std::endl;
 					// Centered Perform Dot
 					sum += Dot(batch, filter, i, j, k);
 
