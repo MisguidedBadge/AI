@@ -6,6 +6,7 @@
 	- Image and kernel are a 1 dimensional contigous array
 */
 ConvolutionFilter::ConvolutionFilter(
+									int batch,
 									int channels,
 									int height,
 									int width,
@@ -31,7 +32,7 @@ ConvolutionFilter::ConvolutionFilter(
 	this->error = 0;
 	// Preallocate vector sizes
 	// Input
-	this->input.resize(this->channels);
+	/*this->input.resize(this->channels);*/
 	this->kernels.resize(this->channels);
 	for (i = 0; i < this->channels; i++)
 	{
@@ -40,7 +41,9 @@ ConvolutionFilter::ConvolutionFilter(
 			this->kernels[i][j].resize(kernel_tsize);
 	}
 	// Output
-	this->output.resize(this->num_filters);
+	this->output.resize(batch);
+	for(int i = 0; i < this->output.size(); i++)
+		this->output[i].resize(this->num_filters);
 	// Activation function
 	this->Activate = Activation;
 	
@@ -77,13 +80,16 @@ void ConvolutionFilter::InitializeKernel()
 }
 
 /* Load Image
-- Input: Image
+- Input: Image (pass by reference *lowers memory usage by 35%*)
 */
-void ConvolutionFilter::LoadImage(vector<vector<float>> input)
+void ConvolutionFilter::LoadImage(vector<vector<vector<float>>> *input)
 {
 	this->input = input;
-	for(int i = 0; i < this->channels; i++)
-		this->input[i] = ZeroPad(input[i]);
+
+	// First value is 0 always
+	/*float val = this->input[0][1][0][0];*/
+	//for(int i = 0; i < this->channels; i++)
+	//	this->input[i] = ZeroPad(input[i]);
 }
 
 /* Zero Pad
@@ -123,13 +129,15 @@ vector<float> ConvolutionFilter::ZeroPad(vector<float> image)
 void ConvolutionFilter::FeedForward()
 {
 	// Perform convolution through each filter
-	for (int i = 0; i < this->num_filters; i++)
-		this->output[i] = Convolve(i);
+	for(int i = 0; i < this->input->size(); i++)
+		for (int j = 0; j < this->num_filters; j++)
+			this->output[i][j] = Convolve(i, j);
 
 	// Activate output values
-	for(int i = 0; i < this->num_filters; i++)
-		for (int j = 0; j < this->output.size(); j++)
-			this->output[i][j] = (float)this->Activate(this->output[i][j]);
+	for(int k = 0; k < this->input->size(); k++)
+		for(int i = 0; i < this->num_filters; i++)
+			for (int j = 0; j < this->output.size(); j++)
+				this->output[k][i][j] = (float)this->Activate(this->output[k][i][j]);
 
 }
 
@@ -138,31 +146,31 @@ void ConvolutionFilter::FeedForward()
 - Convolve with respect to each filter
 -- Start from top left (non padded)
 */
-vector<float> ConvolutionFilter::Convolve(int filter)
+vector<float> ConvolutionFilter::Convolve(int batch, int filter)
 {
 	// local variables
 	int i, j, k;
 	float sum;
 	vector<float> output;
-
-	// loop through the height starting after the border
-	for (j = border; j < (this->height + border); j += this->stride_y)
-	{
-		// loop through the width
-		for (k = border; k < (this->width + border); k += this->stride_x)
+	//std::cout << this->input[0][0][0].size() << std::endl;
+		// loop through the height starting after the border
+		for (j = 0; j < (this->height); j += this->stride_y)
 		{
-			sum = 0;
-			// for each channel
-			for (i = 0; i < this->channels; i++)
+			// loop through the width
+			for (k = 0; k < (this->width); k += this->stride_x)
 			{
-				// Centered Perform Dot
-				sum += Dot(filter, i, j, k);
-				
-			}
-			output.insert(output.end(),sum);
-		}
+				sum = 0;
+				// for each channel
+				for (i = 0; i < this->channels; i++)
+				{
+					// Centered Perform Dot
+					sum += Dot(batch, filter, i, j, k);
 
-	}
+				}
+				output.insert(output.end(), sum);
+			}
+			
+		}
 	return output;
 }
 
@@ -171,7 +179,7 @@ vector<float> ConvolutionFilter::Convolve(int filter)
 - Input: filter number, channel to be filtered, (x and y) of center
 - Output: float weighted sum
 */
-float ConvolutionFilter::Dot(int filter, int channel, int height, int width)
+float ConvolutionFilter::Dot(int batch, int filter, int channel, int height, int width)
 {
 	float weighted_sum = 0;
 	float tval = 0;
@@ -185,7 +193,12 @@ float ConvolutionFilter::Dot(int filter, int channel, int height, int width)
 		// width
 		for (j = -border; j <= border; j++)
 		{
-			tval = this->input[channel][(width + j) + ((height + i)*(this->width + 2*this->border))] * this->kernels[channel][filter][k++];
+			if (i + height < 0 || i + height > this->height - 1)
+				tval = 0;
+			else if (j + width < 0 || j + width > this->width - 1)
+				tval = 0;
+			else
+				tval = this->input[0][batch][channel][(width + j) + ((height + i) * (this->width))];/** this->kernels[channel][filter][k++];*/
 			weighted_sum += tval;
 		}
 		
@@ -196,7 +209,7 @@ float ConvolutionFilter::Dot(int filter, int channel, int height, int width)
 
 /* Return the Output Image
 */
-vector<vector<float>> ConvolutionFilter::Output()
+vector<vector<vector<float>>> ConvolutionFilter::Output()
 {
 	return this->output;
 }

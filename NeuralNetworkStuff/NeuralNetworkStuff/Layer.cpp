@@ -6,15 +6,14 @@
 - Setup vectors adn variables
 */
 Layer::Layer(int num_neurons,
-			  vector<float> inputs,
-			  int outputs,
+			  int next_neuron,
+			  int input_size,
               float  (*Activation)(float x),
               float learning_rate) {
   // define the number of inputs 
-  this->inputs = inputs;
-  this->num_inputs = inputs.size();
+  this->num_inputs = input_size;
   this->num_neurons = num_neurons;
-  this->num_outputs = outputs;
+  this->next_neuron = next_neuron;
   this->learning_rate = learning_rate;
   // Preallocate vector size
   this->weights.resize(num_neurons, vector<float>(num_inputs, 0));
@@ -46,7 +45,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = ((float)((rand()%100)))/1000000.00; //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%100)))/100000.00; //rand()%6 + 1;
     }
   }
 }
@@ -102,8 +101,9 @@ void Layer::ActivateZ() {
 	Output: None
 	Calculate Error and Backpropagate it to change weights
 */
-void Layer::BackPropagation(vector<float> target) {
-  this->LayerError(target);
+void Layer::BackPropagation(float error) {
+  this->error = error;
+  this->LayerError();
 
   // determining the weight error
   for (int i = 0; i < this->weights.size(); i++)  {
@@ -151,14 +151,13 @@ void Layer::UpdateWeights(){
 - OutputError = Output - Target
 - Overall output will have N neurons for N outputs
 */
-void Layer::LayerError(vector<float> target) {
-  this->error = 0.0;
+void Layer::LayerError() {
 
-  for (int i = 0; i < this->num_outputs; i++)
+  for (int i = 0; i < this->next_neuron; i++)
   {
 	  // Compute layer error
-	  this->DCZ[i] = (this->outputs[i] - target[i]) * DRelu(this->Z[i]);
-	  this->error += (this->outputs[i] - target[i]);
+	  this->DCZ[i] = this->error * DRelu(this->Z[i]);
+	  /*this->error += (this->outputs[i] - target[i]);*/
   }
 }
 
@@ -168,11 +167,11 @@ void Layer::LayerError(vector<float> target) {
 */
 void Layer::LayerError(vector<vector<float>> weights, vector<float> neuron_error) {
 	this->error = 0.0;
-	float sum = 0;
+	float sum = 0.0;
 	// Go through each neuron
 	for (int i = 0; i < this->num_neurons; i++) {
 		// Sum weighted Error for that neuron
-		for (int j = 0; j < this->num_outputs; j++)
+		for (int j = 0; j < this->next_neuron; j++)
 		{
 			// Take the transpose of the Ahead layer's weights
 			// Compute Error by multiplying Layer weight corresponding to the Output error

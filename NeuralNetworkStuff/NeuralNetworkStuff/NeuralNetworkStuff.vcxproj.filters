@@ -55,10 +55,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="I00000.jpg">
+    <Image Include="I0.jpg">
       <Filter>Source Files</Filter>
     </Image>
-    <Image Include="I00976.jpg">
+    <Image Include="I1.jpg">
       <Filter>Source Files</Filter>
     </Image>
   </ItemGroup>
