@@ -29,14 +29,14 @@ public:
 	vector<float> outputs;				// outputs of the layer
 	int num_inputs;
 	int num_neurons;					// number of neurons in the layer
-	int num_outputs;
+	int next_neuron;
 	float learning_rate;
 	float error;
 	/* Class Initial Methods (Public) */
 	// constructor
 	Layer (int num_neurons,
-		  vector<float> inputs,
-		  int outputs,
+		  int next_neuron,
+		  int input_size,
           float (*Activation)(float x),
           float learningrate);
 
@@ -45,13 +45,13 @@ public:
 
 	/* Class Methods (Public)*/
 	// Initialize weights to random values
-	void InitializeWeights(int,int);	
+	void InitializeWeights(int input,int neurons);	
 	// Load inputs into network
 	void LoadInput(vector<float> inputs);
 	// Feed input data and go through network
 	void FeedForward();
 	// Backpropagate to Output and hidden layers
-	void BackPropagation(vector<float> target);
+	void BackPropagation(float error);
 	void BackPropagation(vector<vector<float>> weights, vector<float> neuron_error);
 	// Update weights after error calculation
 	void UpdateWeights();
@@ -66,7 +66,7 @@ private:
 	void ActivateZ();
 
 	// backpropagation
-	void LayerError(vector<float> target);
+	void LayerError();
 	void LayerError(vector<vector<float>> weights, vector<float> neuron_error);
 
 };
