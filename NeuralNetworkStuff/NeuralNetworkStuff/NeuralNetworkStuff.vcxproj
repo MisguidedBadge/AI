@@ -143,8 +143,8 @@
     <ClCompile Include="Pool.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="I00000.jpg" />
-    <Image Include="I00976.jpg" />
+    <Image Include="I0.jpg" />
+    <Image Include="I1.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

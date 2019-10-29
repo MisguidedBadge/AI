@@ -14,8 +14,8 @@ class ConvolutionFilter
 public:
 	// Class properties
 	vector<kernel_array> kernels;
-	vector<vector<float>>	output;			// Activation Function of convolutional filter
-	vector<vector<float>>	input;				// Input Matrix
+	vector<vector<vector<float>>>	output;			// Activation Function of convolutional filter
+	vector<vector<vector<float>>>	*input;				// Input Matrix
 	int		channels;					// number of channels for the input
 	int		height;						// image height
 	int		width;						// image width
@@ -29,6 +29,7 @@ public:
 	float	error;						// Error value computed
 	// Constructor
 	ConvolutionFilter(
+					int batch,
 					int channels,
 					int height,
 					int width,
@@ -43,22 +44,22 @@ public:
 	// Initialize Kernel Values to random values
 	void InitializeKernel();
 	// Load Input image into class
-	void LoadImage(vector<vector<float>> input);
+	void LoadImage(vector<vector<vector<float>>> *input);
 
 	// Feed network values forward
 	void FeedForward();
 
 	// Return Output
-	vector<vector<float>> Output();
+	vector<vector<vector<float>>> Output();
 private:
 	// Properties
 	float (*Activate)(float x);
 	// Perform Zero padding on the image
 	vector<float> ZeroPad(vector<float> image);
 	// Perform Convolution on the image
-	vector<float> Convolve(int filter);
+	vector<float> Convolve(int batch, int filter);
 	// Dot Product
-	float Dot(int filter, int channel, int height, int width);
+	float Dot(int batch, int filter, int channel, int height, int width);
 };
 
 #endif

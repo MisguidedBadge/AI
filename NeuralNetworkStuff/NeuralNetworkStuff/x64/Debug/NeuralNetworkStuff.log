@@ -1,5 +1,17 @@
-﻿  Main.cpp
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(13,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(30,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(93,49): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+﻿  Activation.cpp
+  ConvolutionFilter.cpp
+  Layer.cpp
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\ConvolutionFilter.cpp(20,9): warning C4101: 'tsize': unreferenced local variable
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(15,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Main.cpp
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         with
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         [
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:             _Ty=float
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Layer.cpp(49,52): warning C4244:         ]
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(14,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(34,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Pool.cpp
+  Generating Code...
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(98,49): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\x64\Debug\NeuralNetworkStuff.exe

@@ -10,6 +10,7 @@
 int main()
 {
 	// Network Variables
+	int batch = 2;
 	float alpha = 0.001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
@@ -22,23 +23,27 @@ int main()
 
 	// CNN Initialize
 	// example Image
-	vector<vector<float>> input;
-	vector<vector<float>> image;
-	input.resize(3);
+	vector<vector<vector<float>>> input;
+	vector<vector<vector<float>>> image;
+
+	input.resize(batch);
+	for(int i = 0; i < batch; i++)
+		input[i].resize(3);
 
 	/* initialize random seed: */
 	srand(time(NULL));
 	ofstream testfile;
 	testfile.open("test_2Layer.dat");
 
-	std::string imageName = "I00000.jpg";
+	std::string imageName;
 
 	//images[i] = cv::imread(imageName, cv::IMREAD_COLOR);
 	cv::Mat matimage;
 	//vector<cv::Mat> matimage;
 	cv::Mat imageChannels[3];
-	//for (int i = 0; i < 2; i++)
-	//{
+	for (int i = 0; i < 2; i++)
+	{
+		imageName = "I" + std::to_string(i) + ".jpg";
 		matimage = cv::imread(imageName, cv::IMREAD_COLOR);
 		cv::split(matimage, imageChannels);
 
@@ -52,12 +57,12 @@ int main()
 				{
 					float pixel = imageChannels[j].at<uchar>(r, c);
 
-					input[j].insert(input[j].end(), pixel);
+					input[i][j].insert(input[i][j].end(), pixel);
 
 				}
 			}
 		}
-	//}
+	}
 	num_channels = 3;
 	height = 480;
 	width = 640;
@@ -68,13 +73,13 @@ int main()
 	stride_y = 1;
 
 	// CNN RGB ////////////////////////////////////////////
-	ConvolutionFilter* cnn = new ConvolutionFilter(num_channels, height, width, num_filters, 3, stride_x, stride_y, Relu, alpha);
+	ConvolutionFilter* cnn = new ConvolutionFilter(batch, num_channels, height, width, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	cnn->InitializeKernel();
-	cnn->LoadImage(input);
+	cnn->LoadImage(&input);
 
 	cnn->FeedForward();
 	image = cnn->Output();
-	image[0] = MaxPool(image[0], 12, height, width);
+	image[0][0] = MaxPool(image[0][0], 12, height, width);
 
 
 	// Input and Output Vectors
@@ -82,7 +87,7 @@ int main()
 
 	// Fully Connected Layers ////////////////////////////////////
 	// Layer Definition
-	Layer* hidden2 = new Layer(400, image[0], 200, Relu, alpha);
+	Layer* hidden2 = new Layer(400, image[0][0], 200, Relu, alpha);
 	Layer* hidden1 = new Layer(200, hidden2->outputs, 1, Relu, alpha);
 	Layer* output_layer = new Layer(1, hidden1->outputs, 1, Relu, alpha);
 
@@ -96,7 +101,7 @@ int main()
 
 	for (int i = 0; i < 30000; i++) {
 		// Feed Forward
-		hidden2->LoadInput(image[0]);
+		hidden2->LoadInput(image[0][0]);
 		hidden2->FeedForward();
 		hidden1->LoadInput(hidden2->outputs);
 		hidden1->FeedForward();
