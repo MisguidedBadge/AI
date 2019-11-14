@@ -12,7 +12,7 @@ int main()
 
 	// Network Variables
 	int batch = 2;
-	float alpha = 0.0001;
+	float alpha = 0.00001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
 	int nk1 = 0;		// Number of Kernels each cnn layer
@@ -22,7 +22,7 @@ int main()
 	int stride_x;
 	int stride_y;
 	int unroll_size = 768 * 2;
-	float error = 0;
+	vector<float> error;
 	num_channels = 3;
 	height = 480;
 	width = 640;
@@ -31,13 +31,17 @@ int main()
 	num_filters = 2;
 	stride_x = 1;
 	stride_y = 1;
+	error.resize(batch);
 	// Output Vectors
-	vector<float> targets = { 1, 0 };
+	vector<vector<float>> targets = { { 1, 0 } , {0, 1} };
 	// Fully Connected Layers ////////////////////////////////////
 	// Layer Definition
-	Layer* hidden2 = new Layer(200, 3, unroll_size , Relu, alpha);
-	Layer* hidden1 = new Layer(3, 1, 200, Relu, alpha/10.0);
-	Layer* output_layer = new Layer(1, 1, 3, Relu, alpha/100.00);
+	vector<vector<float>> temp_out;
+	temp_out.resize(batch);
+
+	Layer* hidden2 = new Layer(200, 3, unroll_size, batch, temp_out, Relu, alpha);
+	Layer* hidden1 = new Layer(3, 1, 200, batch, hidden2->outputs, Relu, alpha/10.0);
+	Layer* output_layer = new Layer(2, 2, 3, batch, hidden1->outputs, Relu, alpha/100.00);
 
 	// Weight init
 	vector<vector<float>> weights, weights2;
@@ -96,60 +100,41 @@ int main()
 	cnn->FeedForward();
 	image = cnn->Output();
 
-	//int k = 0;
-	//for (int i = 0; i < image[0][0].size(); i++)
-	//{
-	//	testfile << image[0][0][i] << ",";
-	//	if (k == width - 1)
-	//	{
-	//		testfile << endl;
-	//		k = 0;
-	//	}
-	//	else
-	//	{
-	//		k++;
-	//	}
+	image = MaxPool(image, 20, height, width);
 
-	//}
-	for(int i = 0; i < image.size(); i++)
-		for(int k = 0; k < image[i].size(); k++)
-			image[i][k] = MaxPool(image[i][k], 20, height, width);
-
+	// Unroll vectors
 	vector<vector<float>> temp_con;
 	temp_con.resize(batch);
 	for (int i = 0; i < image.size(); i++)
 		for (int k = 0; k < image[i].size(); k++)
 			temp_con[i].insert(temp_con[i].end(), image[i][k].begin(), image[i][k].end());
 
-	vector<vector<float>> temp_out;
-	temp_out.resize(batch);
 
-	for (int i = 0; i < 30; i++) {
-		error = 0;
+
+	for (int i = 0; i < 100; i++) {
+		// zero out error after epoch
+		for (int b = 0; b < batch; b++)
+			error[b] = 0;
 		// Feed Forward
 		temp_out = temp_con;
-		for (int k = 0; k < image.size(); k++)
-		{
-			hidden2->LoadInput(temp_out[k]);
-			hidden2->FeedForward();
-			temp_out[k] = hidden2->outputs;
-		}
-		for (int k = 0; k < image.size(); k++)
-		{
-			hidden1->LoadInput(temp_out[k]);
-			hidden1->FeedForward();
-			temp_out[k] = hidden1->outputs;
-		}
-		for (int k = 0; k < image.size(); k++)
-		{
-			output_layer->LoadInput(temp_out[k]);
-			output_layer->FeedForward();
-			temp_out[k] = output_layer->outputs;
-		}
+		hidden2->LoadInput(temp_out);
+		hidden2->FeedForward();
+
+		hidden1->LoadInput(hidden2->outputs);
+		hidden1->FeedForward();
+
+		output_layer->LoadInput(hidden1->outputs);
+		output_layer->FeedForward();
+
 		// Determine error
-		for (int k = 0; k < targets.size(); k++)
-			error += temp_out[k][0] - targets[k];
-		error = error / targets.size();
+		for (int b = 0; b < batch; b++)
+		{
+			for (int i = 0; i < targets.size(); i++)
+			{
+				error[b] += output_layer->outputs[b][i] - targets[b][i];
+			}
+			error[b] = error[b] / targets[b].size();
+		}
 		// Back Propagation
 		output_layer->BackPropagation(error);
 		hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
@@ -159,11 +144,10 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-		cout << "layer error: " << output_layer->error << endl;
+		cout << "layer error: " << error[0] << error[1] << endl;
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}
-	cout << "layer error: " << output_layer->error << endl;
 	testfile.close();
 
 
