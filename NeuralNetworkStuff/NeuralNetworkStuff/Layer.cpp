@@ -56,7 +56,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = ((float)((rand()%10000)))/1000000.00; //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%1000)))*(.1*this->learning_rate); //rand()%6 + 1;
     }
   }
 }
@@ -178,7 +178,7 @@ void Layer::LayerError(vector<vector<float>> &error) {
 	// each batch
 	for (int b = 0; b < this->batch; b++) 
 	{
-		for (int i = 0; i < this->outputs.size(); i++)
+		for (int i = 0; i < this->outputs[0].size(); i++)
 		{
 				// Compute layer error
 				this->DCZ[b][i] = error[b][i] * DRelu(this->Z[b][i]);

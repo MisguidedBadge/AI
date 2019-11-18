@@ -11,7 +11,7 @@ int main()
 {
 
 	// Network Variables
-	int batch = 2;
+	int batch = 10;
 	float alpha = 0.001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
@@ -21,12 +21,12 @@ int main()
 	int num_filters;
 	int stride_x;
 	int stride_y;
-	int unroll_size = 768 * 2;
+	int unroll_size = 144;
 	int outputs = 2;
 	vector<vector<float>> error;
 	num_channels = 3;
-	height = 480;
-	width = 640;
+	height = 250;
+	width = 120;
 	nk1 = 1;
 	ks1 = 4;
 	num_filters = 2;
@@ -34,7 +34,7 @@ int main()
 	stride_y = 1;
 	error.resize(batch);
 	// Output Vectors
-	vector<vector<float>> targets = { { 1, 0 } , {1, 0} };
+	vector<vector<float>> targets = { { 1, 0 } , {0, 1}, {1, 0} , {1, 0} , {1, 0} , {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1} };
 	for (int i = 0; i < batch; i++)	// batch size
 		error[i].resize(outputs);
 
@@ -43,15 +43,15 @@ int main()
 	vector<vector<float>> temp_out;
 	temp_out.resize(batch);
 
-	Layer* hidden2 = new Layer(400, 200, unroll_size, batch, temp_out, Relu, alpha);
-	Layer* hidden1 = new Layer(200, outputs, 400, batch, hidden2->outputs, Relu, alpha/100.00);
-	Layer* output_layer = new Layer(outputs, outputs, 200, batch, hidden1->outputs, Relu, alpha/1000.00);
+	Layer* hidden2 = new Layer(100, 20, unroll_size, batch, temp_out, Relu, alpha);
+	Layer* hidden1 = new Layer(20, outputs, 100, batch, hidden2->outputs, Relu, alpha/10.0);
+	Layer* output_layer = new Layer(outputs, outputs, 20, batch, hidden1->outputs, Relu, alpha/100.0);
 
 	// Weight init
 	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(3, outputs);
-	hidden1->InitializeWeights(200, 3);
-	hidden2->InitializeWeights(unroll_size, 200);
+	output_layer->InitializeWeights(20, outputs);
+	hidden1->InitializeWeights(100, 20);
+	hidden2->InitializeWeights(unroll_size, 100);
 	// CNN Initialize
 	// example Image
 	vector<vector<vector<float>>> input;
@@ -72,12 +72,14 @@ int main()
 	cv::Mat matimage;
 	//vector<cv::Mat> matimage;
 	cv::Mat imageChannels[3];
-	for (int i = 0; i < 2; i++)
+	cv::Size size(width, height);
+	for (int i = 0; i < batch; i++)
 	{
 		imageName = "I" + std::to_string(i) + ".jpg";
 		matimage = cv::imread(imageName, cv::IMREAD_COLOR);
+		cv::resize(matimage, matimage, size);
 		cv::split(matimage, imageChannels);
-
+		
 
 		for (int j = 0; j < 3; j++)
 		{
@@ -113,9 +115,10 @@ int main()
 		for (int k = 0; k < image[i].size(); k++)
 			temp_con[i].insert(temp_con[i].end(), image[i][k].begin(), image[i][k].end());
 
-
+	float total;
 
 	for (int i = 0; i < 100; i++) {
+		total = 0;
 		// Feed Forward
 		temp_out = temp_con;
 		hidden2->LoadInput(temp_out);
@@ -130,9 +133,10 @@ int main()
 		// Determine error
 		for (int b = 0; b < batch; b++)
 		{
-			for (int i = 0; i < targets.size(); i++)
+			for (int i = 0; i < 2; i++)
 			{
 				error[b][i] = output_layer->outputs[b][i] - targets[b][i];
+				total += error[b][i];
 			}
 		}
 		// Back Propagation
@@ -144,8 +148,10 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-		cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
-		cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
+		//cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
+		//cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
+		cout << "Output1: " << hidden2->weights[0][0] << ":::::" << hidden2->weights[0][1] << endl;
+		cout << "Error: " << total << endl;
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}

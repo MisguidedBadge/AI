@@ -32,8 +32,8 @@ vector<vector<vector<float>>> MaxPool(vector<vector<vector<float>>> &image, int 
 						for (int l = (j - (size - 1)); l <= (j); l++)
 						{
 							// take the maximum value
-							if (image[batch][channel][l + k * height] > temp)
-								temp = image[batch][channel][l + k * height];
+							if (image[batch][channel][l + k * width] > temp)
+								temp = image[batch][channel][l + k * width];
 						}
 					}
 					// insert value into new vector
