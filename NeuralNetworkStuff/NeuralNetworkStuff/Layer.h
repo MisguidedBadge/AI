@@ -28,6 +28,7 @@ public:
 	vector<vector<float>> Z;					// sum(weight*input) + bias
 	vector<vector<float>> outputs;				// outputs of the layer [Batch][Neuron][Output]
 	int num_inputs;
+	int batch;
 	int num_neurons;							// number of neurons in the layer
 	int next_neuron;
 	float learning_rate;
@@ -53,7 +54,7 @@ public:
 	// Feed input data and go through network
 	void FeedForward();
 	// Backpropagate to Output and hidden layers
-	void BackPropagation(vector<float> error);
+	void BackPropagation(vector<vector<float>> error);
 	void BackPropagation(vector<vector<float>> &weights, vector<vector<float>> &neuron_error);
 	// Update weights after error calculation
 	void UpdateWeights();
@@ -68,7 +69,7 @@ private:
 	void ActivateZ();
 
 	// backpropagation
-	void LayerError(vector<float>& error);
+	void LayerError(vector<vector<float>>& error);
 	void LayerError(vector<vector<float>> &weights, vector<vector<float>> &neuron_error);
 
 };

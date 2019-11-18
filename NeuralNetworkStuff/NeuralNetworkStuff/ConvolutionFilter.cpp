@@ -71,7 +71,7 @@ void ConvolutionFilter::InitializeKernel()
 			// Kernel matrix
 			for (int k = 0; k < this->kernel_tsize; k++)
 			{
-				this->kernels[i][j][k] = (float)((rand() % 100 / 10000.00));
+				this->kernels[i][j][k] = (float)((rand() % 100 / 100000.00));
 				//this->kernels[i][j][k] = 1;
 			}
 
@@ -193,7 +193,7 @@ float ConvolutionFilter::Dot(int batch, int filter, int channel, int height, int
 			else if (j + width < 0 || j + width > this->width - 1)
 				tval = 0;
 			else
-				tval = this->input[0][batch][channel][(width + j) + ((height + i) * (this->width))];/** this->kernels[channel][filter][k++];*/
+				tval = this->input[0][batch][channel][(width + j) + ((height + i) * (this->width))] * this->kernels[channel][filter][k++];
 			weighted_sum += tval;
 		}
 		

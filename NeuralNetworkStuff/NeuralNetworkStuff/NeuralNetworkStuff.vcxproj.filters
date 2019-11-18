@@ -51,7 +51,7 @@
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="Pool.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

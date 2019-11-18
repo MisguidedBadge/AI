@@ -1,6 +1,6 @@
 ﻿  Main.cpp
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(15,23): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(43,76): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(44,79): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(61,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(15,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(47,84): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(48,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Main.cpp(65,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   NeuralNetworkStuff.vcxproj -> C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\x64\Debug\NeuralNetworkStuff.exe

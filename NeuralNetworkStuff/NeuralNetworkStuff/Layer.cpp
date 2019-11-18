@@ -14,7 +14,8 @@ Layer::Layer(int num_neurons,
               float learning_rate) : inputs(input) {
   // define the number of inputs 
   this->num_inputs = input_size;
-  this->num_neurons = num_neurons;
+  this->num_neurons = num_neurons; 
+  this->batch = batch_size;
   this->next_neuron = next_neuron;
   this->learning_rate = learning_rate;
   // Preallocate vector size
@@ -55,7 +56,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = ((float)((rand()%100)))/100000.00; //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%10000)))/1000000.00; //rand()%6 + 1;
     }
   }
 }
@@ -72,11 +73,8 @@ void Layer::LoadInput(vector<vector<float>> &inputs)
 -	instantiate layer workflow from input to output
 */
 void Layer::FeedForward () {
-	for (int i = 0; i < inputs.size(); i++)
-	{
 		this->ComputeZ();
 		this->ActivateZ();
-	}
 }
 
 /* Compute the Z value
@@ -119,17 +117,18 @@ void Layer::ActivateZ() {
 	Output: None
 	Calculate Error and Backpropagate it to change weights
 */
-void Layer::BackPropagation(vector<float> error) {
-	int avg_err = 0;
+void Layer::BackPropagation(vector<vector<float>> error) {
+	float avg_err = 0;		// average the error between the batches
 	this->LayerError(error);
 
 	// determining the weight error
 	for (int i = 0; i < this->weights.size(); i++)  {
 		for (int j = 0; j < this->weights[i].size(); j++) {
 			avg_err = 0;
-			for (int b = 0; b < outputs.size(); b++)
-				avg_err += this->DCZ[b][i] * inputs[b][j];
-			avg_err = avg_err / outputs.size();
+			for (int b = 0; b < batch; b++)
+				avg_err += (this->DCZ[b][i]) * inputs[b][j];
+
+			avg_err = (avg_err / batch);
 			this->DCW[i][j] = avg_err;
 	}
   }
@@ -141,20 +140,22 @@ void Layer::BackPropagation(vector<float> error) {
 	Calculate Error and Backpropagate it to change weights
 */
 void Layer::BackPropagation(vector<vector<float>> &weights, vector<vector<float>> &neuron_error) {
-	int avg_err = 0;	// average error (batched error)
+	float avg_err = 0;	// average error (batched error)
 	this->LayerError(weights, neuron_error);
 	// determining the weight error
-	concurrency::parallel_for(0, (int)this->weights.size(), [&](int i) {
+	//concurrency::parallel_for(0, (int)this->weights.size(), [&](int i) {
+	for (int i = 0; i < this->weights.size(); i++) {
 		for (int j = 0; j < this->weights[i].size(); j++) {
 			avg_err = 0;
 			// want to average all batch weighted errors
-			for (int b = 0; b < this->outputs.size(); b++)
+			for (int b = 0; b < this->batch; b++)
 				avg_err += this->DCZ[b][i] * (inputs)[b][j];
 			avg_err = avg_err / this->outputs.size();
 			// get the weight average error
 			this->DCW[i][j] = avg_err;
 		}
-		});
+	}
+		//});
 }
 
 /* Update Weights
@@ -173,15 +174,14 @@ void Layer::UpdateWeights(){
 - OutputError = Output - Target
 - Overall output will have N neurons for N outputs
 */
-void Layer::LayerError(vector<float> &error) {
+void Layer::LayerError(vector<vector<float>> &error) {
 	// each batch
-	for (int b = 0; b < this->outputs.size(); b++)
+	for (int b = 0; b < this->batch; b++) 
 	{
-		for (int i = 0; i < this->next_neuron; i++)
+		for (int i = 0; i < this->outputs.size(); i++)
 		{
-			// Compute layer error
-			this->DCZ[b][i] = error[b] * DRelu(this->Z[b][i]);
-			/*this->error += (this->outputs[i] - target[i]);*/
+				// Compute layer error
+				this->DCZ[b][i] = error[b][i] * DRelu(this->Z[b][i]);
 		}
 	}
 }
