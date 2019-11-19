@@ -12,7 +12,7 @@ int main()
 
 	// Network Variables
 	int batch = 10;
-	float alpha = 0.001;
+	float alpha = 0.0001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
 	int nk1 = 0;		// Number of Kernels each cnn layer
@@ -21,7 +21,7 @@ int main()
 	int num_filters;
 	int stride_x;
 	int stride_y;
-	int unroll_size = 144;
+	int unroll_size = 600;
 	int outputs = 2;
 	vector<vector<float>> error;
 	num_channels = 3;
@@ -43,15 +43,15 @@ int main()
 	vector<vector<float>> temp_out;
 	temp_out.resize(batch);
 
-	Layer* hidden2 = new Layer(100, 20, unroll_size, batch, temp_out, Relu, alpha);
-	Layer* hidden1 = new Layer(20, outputs, 100, batch, hidden2->outputs, Relu, alpha/10.0);
-	Layer* output_layer = new Layer(outputs, outputs, 20, batch, hidden1->outputs, Relu, alpha/100.0);
+	Layer* hidden2 = new Layer(200, 100, unroll_size, batch, temp_out, Relu, alpha);
+	Layer* hidden1 = new Layer(100, outputs, 200, batch, hidden2->outputs, Relu, alpha);
+	Layer* output_layer = new Layer(outputs, outputs, 100, batch, hidden1->outputs, Relu, alpha);
 
 	// Weight init
 	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(20, outputs);
-	hidden1->InitializeWeights(100, 20);
-	hidden2->InitializeWeights(unroll_size, 100);
+	output_layer->InitializeWeights(100, outputs);
+	hidden1->InitializeWeights(200, 100);
+	hidden2->InitializeWeights(unroll_size, 200);
 	// CNN Initialize
 	// example Image
 	vector<vector<vector<float>>> input;
@@ -106,7 +106,7 @@ int main()
 	cnn->FeedForward();
 	image = cnn->Output();
 
-	image = MaxPool(image, 20, height, width);
+	image = MaxPool(image, 10, height, width);
 
 	// Unroll vectors
 	vector<vector<float>> temp_con;
@@ -136,8 +136,9 @@ int main()
 			for (int i = 0; i < 2; i++)
 			{
 				error[b][i] = output_layer->outputs[b][i] - targets[b][i];
-				total += error[b][i];
+				
 			}
+			total += error[b][0];
 		}
 		// Back Propagation
 		output_layer->BackPropagation(error);
@@ -148,9 +149,9 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-		//cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
-		//cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
-		cout << "Output1: " << hidden2->weights[0][0] << ":::::" << hidden2->weights[0][1] << endl;
+		cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
+		cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
+		cout << "Output1: " << error[0][0] << ":::::" << error[0][1] << endl;
 		cout << "Error: " << total << endl;
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");

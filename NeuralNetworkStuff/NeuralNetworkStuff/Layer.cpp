@@ -56,7 +56,7 @@ Layer::~Layer() {
 void Layer::InitializeWeights(int inputs, int neurons) {
   for (int i = 0; i < neurons; i++) {
     for (int j = 0; j < inputs; j++) {
-      this->weights[i][j] = ((float)((rand()%1000)))*(.1*this->learning_rate); //rand()%6 + 1;
+      this->weights[i][j] = ((float)((rand()%10000)/10000.00)); //rand()%6 + 1;
     }
   }
 }
@@ -81,6 +81,8 @@ void Layer::FeedForward () {
 - Z = w*i + w*i + ..... b
 */
 void Layer::ComputeZ() {
+	float max = 0;
+	float min = 0;
   // zero Z vector
 for(int b = 0; b < this->inputs.size(); b++)
   for (int i = 0; i < this->num_neurons; i++)
@@ -95,6 +97,22 @@ for( int b = 0; b < this->inputs.size(); b++){
 		}
 	}
   }
+ // Try normalizing data for each Z
+for (int b = 0; b < this->inputs.size(); b++)
+{
+	max = 0;
+	min = 1000000;
+	for (int i = 0; i < this->Z[b].size(); i++)
+	{
+		if (max < this->Z[b][i])
+			max = this->Z[b][i];
+		if (min > this->Z[b][i])
+			min = this->Z[b][i];
+	}
+	for (int i = 0; i < this->Z[b].size(); i++)
+		this->Z[b][i] = (this->Z[b][i] - min) / (max - min);
+
+}
 }
 
 
