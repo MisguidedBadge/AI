@@ -15,7 +15,8 @@ public:
 	// Class properties
 	vector<kernel_array> kernels;
 	vector<vector<vector<float>>>	output;			// Activation Function of convolutional filter
-	vector<vector<vector<float>>>	*input;				// Input Matrix
+	vector<vector<vector<float>>>	*input;			// Input Matrix
+	vector<vector<float>>			dw;				// delta w to change weights after backpropagation
 	int		channels;					// number of channels for the input
 	int		height;						// image height
 	int		width;						// image width
@@ -45,10 +46,10 @@ public:
 	void InitializeKernel();
 	// Load Input image into class
 	void LoadImage(vector<vector<vector<float>>> *input);
-
 	// Feed network values forward
 	void FeedForward();
-
+	// Backpropagation
+	void Backpropagation();
 	// Return Output
 	vector<vector<vector<float>>> Output();
 private:

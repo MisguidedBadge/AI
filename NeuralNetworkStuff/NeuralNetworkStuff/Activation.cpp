@@ -5,7 +5,9 @@
 // sigmoid function definition
 float Sigmoid(float x)
 {
-	return 1 / (1 + exp(-x));
+	float val;
+	val = float(1 / (1 + abs(x)));
+	return val;
 }
 
 // relu function definition
@@ -24,7 +26,9 @@ float Relu(float x)
 // derivative of sigmoid
 float DSigmoid(float x)
 {
-	return Sigmoid(x) * (1 - Sigmoid(x));
+	float val;
+	val = Sigmoid(x) * (1 - Sigmoid(x));
+	return val;
 }
 
 // derivative of Relu

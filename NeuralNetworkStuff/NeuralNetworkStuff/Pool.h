@@ -7,11 +7,15 @@
 //
 /* Max Pool: Take in an image and take a max out of a subset
 	- Input: image, pool size, image height, image width
-	- Output: modified 
+	- Output: Downsampled Image 
 */
-vector<float> MaxPool(vector<float> image, int size, int height, int width);
+vector<vector<vector<float>>> MaxPool(vector<vector<vector<float>>> &image, int size, int height, int width);
 
-
+/* Max Pool Backpropagation
+	- Input: image, pool size, image height, image width
+	- Output: Upsampled image matrix of errors
+*/
+vector<float> BackMax(vector<float> image, int size, int height, int width);
 
 #endif
 

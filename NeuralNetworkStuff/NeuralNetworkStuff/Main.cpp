@@ -11,7 +11,7 @@ int main()
 {
 
 	// Network Variables
-	int batch = 2;
+	int batch = 10;
 	float alpha = 0.0001;
 	int height = 0;		// Image Height
 	int width = 0;		// Image width
@@ -21,28 +21,36 @@ int main()
 	int num_filters;
 	int stride_x;
 	int stride_y;
-	int unroll_size = 768 * 2;
-	float error = 0;
+	int unroll_size = 600;
+	int outputs = 2;
+	vector<vector<float>> error;
 	num_channels = 3;
-	height = 480;
-	width = 640;
+	height = 250;
+	width = 120;
 	nk1 = 1;
 	ks1 = 4;
 	num_filters = 2;
 	stride_x = 1;
 	stride_y = 1;
+	error.resize(batch);
 	// Output Vectors
-	vector<float> targets = { 1, 0 };
+	vector<vector<float>> targets = { { 1, 0 } , {0, 1}, {1, 0} , {1, 0} , {1, 0} , {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1} };
+	for (int i = 0; i < batch; i++)	// batch size
+		error[i].resize(outputs);
+
 	// Fully Connected Layers ////////////////////////////////////
 	// Layer Definition
-	Layer* hidden2 = new Layer(200, 3, unroll_size , Relu, alpha);
-	Layer* hidden1 = new Layer(3, 1, 200, Relu, alpha/10.0);
-	Layer* output_layer = new Layer(1, 1, 3, Relu, alpha/100.00);
+	vector<vector<float>> temp_out;
+	temp_out.resize(batch);
+
+	Layer* hidden2 = new Layer(200, 100, unroll_size, batch, temp_out, Relu, alpha);
+	Layer* hidden1 = new Layer(100, outputs, 200, batch, hidden2->outputs, Relu, alpha);
+	Layer* output_layer = new Layer(outputs, outputs, 100, batch, hidden1->outputs, Relu, alpha);
 
 	// Weight init
 	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(3, 1);
-	hidden1->InitializeWeights(200, 3);
+	output_layer->InitializeWeights(100, outputs);
+	hidden1->InitializeWeights(200, 100);
 	hidden2->InitializeWeights(unroll_size, 200);
 	// CNN Initialize
 	// example Image
@@ -64,12 +72,14 @@ int main()
 	cv::Mat matimage;
 	//vector<cv::Mat> matimage;
 	cv::Mat imageChannels[3];
-	for (int i = 0; i < 2; i++)
+	cv::Size size(width, height);
+	for (int i = 0; i < batch; i++)
 	{
 		imageName = "I" + std::to_string(i) + ".jpg";
 		matimage = cv::imread(imageName, cv::IMREAD_COLOR);
+		cv::resize(matimage, matimage, size);
 		cv::split(matimage, imageChannels);
-
+		
 
 		for (int j = 0; j < 3; j++)
 		{
@@ -96,60 +106,40 @@ int main()
 	cnn->FeedForward();
 	image = cnn->Output();
 
-	//int k = 0;
-	//for (int i = 0; i < image[0][0].size(); i++)
-	//{
-	//	testfile << image[0][0][i] << ",";
-	//	if (k == width - 1)
-	//	{
-	//		testfile << endl;
-	//		k = 0;
-	//	}
-	//	else
-	//	{
-	//		k++;
-	//	}
+	image = MaxPool(image, 10, height, width);
 
-	//}
-	for(int i = 0; i < image.size(); i++)
-		for(int k = 0; k < image[i].size(); k++)
-			image[i][k] = MaxPool(image[i][k], 20, height, width);
-
+	// Unroll vectors
 	vector<vector<float>> temp_con;
 	temp_con.resize(batch);
 	for (int i = 0; i < image.size(); i++)
 		for (int k = 0; k < image[i].size(); k++)
 			temp_con[i].insert(temp_con[i].end(), image[i][k].begin(), image[i][k].end());
 
-	vector<vector<float>> temp_out;
-	temp_out.resize(batch);
+	float total;
 
-	for (int i = 0; i < 30; i++) {
-		error = 0;
+	for (int i = 0; i < 100; i++) {
+		total = 0;
 		// Feed Forward
 		temp_out = temp_con;
-		for (int k = 0; k < image.size(); k++)
-		{
-			hidden2->LoadInput(temp_out[k]);
-			hidden2->FeedForward();
-			temp_out[k] = hidden2->outputs;
-		}
-		for (int k = 0; k < image.size(); k++)
-		{
-			hidden1->LoadInput(temp_out[k]);
-			hidden1->FeedForward();
-			temp_out[k] = hidden1->outputs;
-		}
-		for (int k = 0; k < image.size(); k++)
-		{
-			output_layer->LoadInput(temp_out[k]);
-			output_layer->FeedForward();
-			temp_out[k] = output_layer->outputs;
-		}
+		hidden2->LoadInput(temp_out);
+		hidden2->FeedForward();
+
+		hidden1->LoadInput(hidden2->outputs);
+		hidden1->FeedForward();
+
+		output_layer->LoadInput(hidden1->outputs);
+		output_layer->FeedForward();
+
 		// Determine error
-		for (int k = 0; k < targets.size(); k++)
-			error += temp_out[k][0] - targets[k];
-		error = error / targets.size();
+		for (int b = 0; b < batch; b++)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				error[b][i] = output_layer->outputs[b][i] - targets[b][i];
+				
+			}
+			total += error[b][0];
+		}
 		// Back Propagation
 		output_layer->BackPropagation(error);
 		hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
@@ -159,11 +149,21 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
+<<<<<<< HEAD
 		//cout << "layer error: " << output_layer->error << endl;
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}
 	//cout << "layer error: " << output_layer->error << endl;
+=======
+		cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
+		cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
+		cout << "Output1: " << error[0][0] << ":::::" << error[0][1] << endl;
+		cout << "Error: " << total << endl;
+		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
+		//printf("Test \n");
+	}
+>>>>>>> TreyCNN
 	testfile.close();
 
 

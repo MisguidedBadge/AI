@@ -20,15 +20,16 @@ public:
 	 - Column is neuron index
 	 - matrix[ij] i = neuron j = index within
 	*/
-	vector<vector<float>> weights;		// create a vector of weights
-	vector<vector<float>> DCW;			// D(C/W)	Weight derivative
-	vector<float> DLZ;					// D(L/Z)
-	vector<float> DCZ;					// D(C/Z) = D(C/L) * D(L/Z)
-	vector<float> inputs;
-	vector<float> Z;					// sum(weight*input) + bias
-	vector<float> outputs;				// outputs of the layer
+	vector<vector<float>> weights;				// create a vector of weights
+	// [batch][value]
+	vector<vector<float>> DCW;					// D(C/W)	Weight derivative [batch][
+	vector<vector<float>> DCZ;					// D(C/Z) = D(C/L) * D(L/Z)
+	vector<vector<float>>& inputs;
+	vector<vector<float>> Z;					// sum(weight*input) + bias
+	vector<vector<float>> outputs;				// outputs of the layer [Batch][Neuron][Output]
 	int num_inputs;
-	int num_neurons;					// number of neurons in the layer
+	int batch;
+	int num_neurons;							// number of neurons in the layer
 	int next_neuron;
 	float learning_rate;
 	float error;
@@ -37,6 +38,8 @@ public:
 	Layer (int num_neurons,
 		  int next_neuron,
 		  int input_size,
+		  int batch_size,
+		  vector<vector<float>>& input,
           float (*Activation)(float x),
           float learningrate);
 
@@ -47,12 +50,12 @@ public:
 	// Initialize weights to random values
 	void InitializeWeights(int input,int neurons);	
 	// Load inputs into network
-	void LoadInput(vector<float> inputs);
+	void LoadInput(vector<vector<float>> &inputs);
 	// Feed input data and go through network
 	void FeedForward();
 	// Backpropagate to Output and hidden layers
-	void BackPropagation(float error);
-	void BackPropagation(vector<vector<float>> weights, vector<float> neuron_error);
+	void BackPropagation(vector<vector<float>> error);
+	void BackPropagation(vector<vector<float>> &weights, vector<vector<float>> &neuron_error);
 	// Update weights after error calculation
 	void UpdateWeights();
 
@@ -66,8 +69,8 @@ private:
 	void ActivateZ();
 
 	// backpropagation
-	void LayerError();
-	void LayerError(vector<vector<float>> weights, vector<float> neuron_error);
+	void LayerError(vector<vector<float>>& error);
+	void LayerError(vector<vector<float>> &weights, vector<vector<float>> &neuron_error);
 
 };
 

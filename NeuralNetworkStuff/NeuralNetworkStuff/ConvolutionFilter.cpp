@@ -71,8 +71,8 @@ void ConvolutionFilter::InitializeKernel()
 			// Kernel matrix
 			for (int k = 0; k < this->kernel_tsize; k++)
 			{
-				//this->kernels[i][j][k] = (float)((rand() % 100 / 10000.00));
-				this->kernels[i][j][k] = 1;
+				this->kernels[i][j][k] = (float)((rand() % 100 / 100000.00));
+				//this->kernels[i][j][k] = 1;
 			}
 
 		}
@@ -85,11 +85,6 @@ void ConvolutionFilter::InitializeKernel()
 void ConvolutionFilter::LoadImage(vector<vector<vector<float>>> *input)
 {
 	this->input = input;
-
-	// First value is 0 always
-	/*float val = this->input[0][1][0][0];*/
-	//for(int i = 0; i < this->channels; i++)
-	//	this->input[i] = ZeroPad(input[i]);
 }
 
 /* Zero Pad
@@ -198,7 +193,7 @@ float ConvolutionFilter::Dot(int batch, int filter, int channel, int height, int
 			else if (j + width < 0 || j + width > this->width - 1)
 				tval = 0;
 			else
-				tval = this->input[0][batch][channel][(width + j) + ((height + i) * (this->width))];/** this->kernels[channel][filter][k++];*/
+				tval = this->input[0][batch][channel][(width + j) + ((height + i) * (this->width))] * this->kernels[channel][filter][k++];
 			weighted_sum += tval;
 		}
 		
@@ -206,6 +201,18 @@ float ConvolutionFilter::Dot(int batch, int filter, int channel, int height, int
 
 	return weighted_sum;
 }
+
+/* Backpropagation Function
+	- Perform backpropagation through a weird convoluted way of decovoluting
+*/
+void ConvolutionFilter::Backpropagation()
+{
+	// 
+	// DRelu
+
+
+}
+
 
 /* Return the Output Image
 */
