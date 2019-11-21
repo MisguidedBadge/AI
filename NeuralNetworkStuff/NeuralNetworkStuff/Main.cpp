@@ -37,11 +37,16 @@ int main()
 	vector<vector<float>> targets = { { 1, 0 } , {0, 1}, {1, 0} , {1, 0} , {1, 0} , {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1} };
 	for (int i = 0; i < batch; i++)	// batch size
 		error[i].resize(outputs);
-
+	// TEST VECTORS
+	// vector<vector<float>> Reverse = { { 0, 1, 1, 0}, {1, 1, 1, 1}, {1, 0 , 1, 0} }; // Test Case for BackProp Max
+	//Reverse = BackPropMax(Reverse, 3, 10, 2, 2);
 	// Fully Connected Layers ////////////////////////////////////
 	// Layer Definition
 	vector<vector<float>> temp_out;
 	temp_out.resize(batch);
+
+
+	
 
 	Layer* hidden2 = new Layer(200, 100, unroll_size, batch, temp_out, Relu, alpha);
 	Layer* hidden1 = new Layer(100, outputs, 200, batch, hidden2->outputs, Relu, alpha);
@@ -149,13 +154,6 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		// Print Error
-<<<<<<< HEAD
-		//cout << "layer error: " << output_layer->error << endl;
-		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
-		//printf("Test \n");
-	}
-	//cout << "layer error: " << output_layer->error << endl;
-=======
 		cout << "Output1: " << output_layer->outputs[0][0] << ":::::" << output_layer->outputs[0][1] << endl;
 		cout << "Output2: " << output_layer->outputs[1][0] << ":::::" << output_layer->outputs[1][1] << endl;
 		cout << "Output1: " << error[0][0] << ":::::" << error[0][1] << endl;
@@ -163,7 +161,6 @@ int main()
 		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
 		//printf("Test \n");
 	}
->>>>>>> TreyCNN
 	testfile.close();
 
 
