@@ -46,5 +46,31 @@ vector<vector<vector<float>>> MaxPool(vector<vector<vector<float>>> &image, int 
 }
 
 /* Backprop for maxpool
-
+-- Take an error matrix and expand it by a sizexsize subset within the matrix
+-- Error matrix consists
 */
+
+vector<vector<float>> BackPropMax(vector<vector<float>> &errormat, int channels, int size, int height, int width)
+{
+	// output matrix
+	int size_tot = size * size;
+	vector<vector<float>> output;
+	output.resize(channels);	// how many channels there are
+	int err_c = 0;
+
+	for (int i = 0; i < channels; i++)	// for each channel
+		output[i].resize(errormat[0].size()*size_tot);	// make the channel the size of your error matrix
+
+	for (int i = 0; i < height * size; i = i + size)
+		for (int j = 0; j < width * size; j = j + size)
+		{
+			for (int r = i; r < (i + size); r++)
+				for (int c = j; c < (j + size); c++)
+					for (int channel = 0; channel < channels; channel++)
+						// input value from errormat and increment the value of errormat by 1 (it should go through all values
+						output[channel][c + r * (width * size)] = errormat[channel][err_c];
+			err_c++;
+		}
+	return output;
+}
+
