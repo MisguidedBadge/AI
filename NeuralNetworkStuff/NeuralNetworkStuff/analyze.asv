@@ -1,0 +1,9 @@
+img_mat = table2array(test2Layer2);
+
+maximum = max(img_mat, [], 'all');
+
+minimum = min(img_mat, [], 'all');
+
+img_mat = 255 * (img_mat - minimum)/(maximum - minimum);
+
+imshow(img

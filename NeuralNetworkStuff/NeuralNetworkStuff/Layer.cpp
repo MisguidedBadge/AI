@@ -98,21 +98,7 @@ for( int b = 0; b < this->inputs.size(); b++){
 	}
   }
  // Try normalizing data for each Z
-for (int b = 0; b < this->inputs.size(); b++)
-{
-	max = 0;
-	min = 1000000;
-	for (int i = 0; i < this->Z[b].size(); i++)
-	{
-		if (max < this->Z[b][i])
-			max = this->Z[b][i];
-		if (min > this->Z[b][i])
-			min = this->Z[b][i];
-	}
-	for (int i = 0; i < this->Z[b].size(); i++)
-		this->Z[b][i] = (this->Z[b][i] - min) / (max - min);
-
-}
+ Normalize(this->Z);
 }
 
 
@@ -159,6 +145,8 @@ void Layer::BackPropagation(vector<vector<float>> error) {
 */
 void Layer::BackPropagation(vector<vector<float>> &weights, vector<vector<float>> &neuron_error) {
 	float avg_err = 0;	// average error (batched error)
+	float max;
+	float min;
 	this->LayerError(weights, neuron_error);
 	// determining the weight error
 	//concurrency::parallel_for(0, (int)this->weights.size(), [&](int i) {
@@ -173,8 +161,14 @@ void Layer::BackPropagation(vector<vector<float>> &weights, vector<vector<float>
 			this->DCW[i][j] = avg_err;
 		}
 	}
-		//});
+	Normalize(this->DCZ);
+	Normalize(this->DCW);
+	for (int i = 0; i < this->DCW.size(); i++)
+		for (int j = 0; j < this->DCW[i].size(); j++)
+			this->DCW[i][j] = this->DCW[i][j] * 10.0;
 }
+		//});
+
 
 /* Update Weights
 - Update Layer Weights
