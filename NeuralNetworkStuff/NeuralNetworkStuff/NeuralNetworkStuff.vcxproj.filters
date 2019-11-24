@@ -36,6 +36,9 @@
     <ClInclude Include="Pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Normalize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="Pool.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Normalize.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

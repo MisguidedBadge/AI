@@ -15,7 +15,7 @@ vector<vector<vector<float>>> MaxPool(vector<vector<vector<float>>> &image, int 
 	- Input: image, pool size, image height, image width
 	- Output: Upsampled image matrix of errors
 */
-vector<vector<float>> BackPropMax(vector<vector<float>>& errormat, int channels, int size, int height, int width);
+vector<vector<vector<float>>> BackPropMax(vector<vector<vector<float>>>& errormat, int channels, int size, int height, int width);
 
 #endif
 

@@ -22,7 +22,7 @@ public:
 	*/
 	vector<vector<float>> weights;				// create a vector of weights
 	// [batch][value]
-	vector<vector<float>> DCW;					// D(C/W)	Weight derivative [batch][
+	vector<vector<float>> DCW;					// D(C/W)	Weight derivative [Neuron][Input]
 	vector<vector<float>> DCZ;					// D(C/Z) = D(C/L) * D(L/Z)
 	vector<vector<float>>& inputs;
 	vector<vector<float>> Z;					// sum(weight*input) + bias

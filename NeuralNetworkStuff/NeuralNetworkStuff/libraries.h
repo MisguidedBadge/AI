@@ -20,6 +20,6 @@
 #include "ConvolutionFilter.h"
 #include "Pool.h"
 #include "opencv2/opencv.hpp"
-
+#include "Normalize.h"
 
 #endif
