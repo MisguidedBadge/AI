@@ -1,6 +1,6 @@
 $directoryName = $null
 $count = 0
-Get-ChildItem "C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Training_Data\Peds\" -File | 
+Get-ChildItem "C:\Users\Peter\Desktop\AI\Repo\AI\NeuralNetworkStuff\NeuralNetworkStuff\Testing_Data\NonPedTest" -File | 
   ForEach-Object {
    if ($directoryName -eq $null -or $directoryName -ne $_.DirectoryName) {
       #$directoryName = $_.DirectoryName

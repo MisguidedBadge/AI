@@ -17,6 +17,7 @@ int main()
 	int width = 0;		// Image width
 	int nk1 = 0;		// Number of Kernels each cnn layer
 	int ks1 = 0;		// Kernel Sizes of each layer
+	int end = 100;
 	int num_channels;
 	int num_filters;
 	int stride_x;
@@ -111,7 +112,14 @@ int main()
 	vector<int> RanNeg;						// Random Pool Non-Pedestrian
 											
 //////////////////////*		Preprocessing Stuff		*///////////////////////////////////////
-	for (int i = 0; i < 200; i++) {
+	for (int i = 0; i < end; i++) {
+
+		if (i == end - 1)
+		{
+			RanPos = { 1, 2, 3, 4, 5, 6 };
+			RanNeg = { 1, 2, 3, 4, 5, 6 };
+
+		}
 		// 50/50 split of Pedestrian and Non-Pedestrian
 		RanPos = RandomSelection(batch / 2, pool);
 		RanNeg = RandomSelection(batch / 2, pool);
@@ -195,6 +203,9 @@ int main()
 		output_layer->LoadInput(hidden->outputs);
 		output_layer->FeedForward();
 
+		if (i == end - 1)
+			break;
+
 		// Determine error
 		for (int b = 0; b < batch; b++)
 		{
@@ -273,6 +284,17 @@ int main()
 
 			
 	}
+	// Testing //
+	cout << "Testing" << endl;
+	for (int i = 0; i < output_layer->outputs.size(); i++)
+		cout << output_layer->outputs[i][0] << "; ";
+	cout << "Error: ";
+	for (int i = 0; i < error.size(); i++)
+		cout << error[i][0] << "; ";
+	cout << endl;
+	cout << "Error: " << total << endl;
+
+	// 
 	for (int j = 0; j < cnn->output.size(); j++)
 	{
 		for (int i = 0; i < cnn->output[0].size(); i++)
