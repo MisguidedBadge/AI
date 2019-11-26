@@ -22,6 +22,7 @@ int main()
 	int nk1 = 0;		// Number of Kernels each cnn layer
 	int ks1 = 0;		// Kernel Sizes of each layer
 	int num_channels;
+	// Filters 
 	int num_filters;
 	int stride_x;
 	int stride_y;
@@ -33,13 +34,13 @@ int main()
 	width = 120;
 	nk1 = 1;
 	ks1 = 4;
-	num_filters = 4;
+	num_filters = 6;
 	stride_x = 1;
 	stride_y = 1;
 	unroll_size = 300 * num_filters;
 	error.resize(batch);
 	// Output Vectors
-	vector<vector<float>> targets = { { 1, 0 } , {0, 1}, {1, 0} , {1, 0} , {1, 0} , {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1} };
+	vector<vector<float>> targets = { { 0, 1 } , {0, 1}, {1, 0} , {1, 0} , {0, 1} , {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1} };
 	for (int i = 0; i < batch; i++)	// batch size
 		error[i].resize(outputs);
 	// Unroll Vector
@@ -54,13 +55,14 @@ int main()
 	Layer* output_layer = new Layer(outputs, outputs, 100, batch, hidden1->outputs, Relu, alpha);
 	// CNN Layers////////////////////
 	ConvolutionFilter* cnn = new ConvolutionFilter(batch, num_channels, height, width, num_filters, 3, stride_x, stride_y, Relu, alpha);
-	
+	ConvolutionFilter* cnn2 = new ConvolutionFilter(batch, num_filters, height/2, width/2, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	// Weight init
 	vector<vector<float>> weights, weights2;
 	output_layer->InitializeWeights(100, outputs);
 	hidden1->InitializeWeights(200, 100);
 	hidden2->InitializeWeights(unroll_size, 200);
 	cnn->InitializeKernel();
+	cnn2->InitializeKernel();
 
 	// example Image
 	vector<vector<vector<float>>> input;
@@ -72,7 +74,7 @@ int main()
 	/* initialize random seed: */
 	srand(time(NULL));
 	ofstream testfile;
-	testfile.open("test_2Layer.dat");
+	testfile.open("weights.dat");
 
 	std::string imageName;
 
@@ -114,11 +116,16 @@ int main()
 	//////////////// CNN Operations ///////////////////////////////////////
 		cnn->LoadImage(&input);
 		cnn->FeedForward();
-
 		image = cnn->Output();
-		image = MaxPool(image, 10, height, width);
+		image = MaxPool(image, 2, height, width);			// 30,000 / 4
 
+		cnn2->LoadImage(&image);
+		cnn2->FeedForward();
 
+		image = cnn2->Output();
+		image = MaxPool(image, 5, height / 2, width / 2);		// (30,000 / 4) / 16
+
+		// 300 * number of filters
 		for (int i = 0; i < image.size(); i++)
 		{
 			int count = 0;
@@ -183,13 +190,16 @@ int main()
 					image[i][j][k] = unroll_vec[i][count++];
 		}
 
-		image = BackPropMax(image, num_filters, 10, height/10, width/10);
+		image = BackPropMax(image, num_filters, 5, height/10, width/10);
+		cnn2->Backpropagation(image);
+		image = BackPropMax(image, num_filters, 2, height / 2, width / 2);
 		cnn->Backpropagation(image);
 		// Update Layer Weights
 		hidden2->UpdateWeights();
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		cnn->UpdateWeights();
+		cnn2->UpdateWeights();
 		// Print Error
 		cout << "Epoch: " << i << endl;
 		cout << "Output: ";
@@ -203,26 +213,26 @@ int main()
 		cout << "Error: " << total << endl;
 		cout << "CNN Weight: " << cnn->kernels[0][1][1] << endl;
 		cout << "Hidden Layer 1 weight: " << hidden1->weights[0][1] << endl;
-		//testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
-		//printf("Test \n");
-		//if (total == 0)
-		//{
-		//	cout << "Finished" << endl;
-		//	for (int j = 0; j < cnn->output.size(); j++)
-		//	{
-		//		for (int i = 0; i < cnn->output[0].size(); i++)
-		//		{
-		//			for (int k = 0; k < cnn->output[0][0].size(); k++)
-		//			{
-		//				testfile << cnn->output[j][i][k];
-		//				testfile << ";";
-		//			}
-		//			testfile << endl;
-		//		}
-		//		
-		//	}
-		//	break;
-		//}
+		testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
+		printf("Test \n");
+		if (total == 0)
+		{
+			cout << "Finished" << endl;
+			for (int j = 0; j < cnn2->output.size(); j++)
+			{
+				for (int i = 0; i < cnn2->output[0].size(); i++)
+				{
+					for (int k = 0; k < cnn2->output[0][0].size(); k++)
+					{
+						testfile << cnn2->output[j][i][k];
+						testfile << ";";
+					}
+					testfile << endl;
+				}
+				
+			}
+			break;
+		}
 	}
 	testfile.close();
 
