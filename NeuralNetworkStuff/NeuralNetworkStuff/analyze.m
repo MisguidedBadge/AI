@@ -1,7 +1,7 @@
 %img_mat = table2array(test2Layer2);
 T = readtable('weights.dat');
 
-for i = 1:60
+for i = 1:24
     select = T(i, 1:7500);
 
     img_mat = table2array(select);
@@ -15,7 +15,7 @@ for i = 1:60
 
     TS = 255 * (TS - minimum)/(maximum - minimum);
 
-    subplot(10,6,i);
+    subplot(2,12,i);
     imagesc(TS);
     %imshow(TS, [0 255]);
 end

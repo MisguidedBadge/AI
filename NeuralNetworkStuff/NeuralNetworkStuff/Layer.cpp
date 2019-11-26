@@ -98,7 +98,8 @@ for( int b = 0; b < this->inputs.size(); b++){
 	}
   }
  // Try normalizing data for each Z
- Normalize(this->Z);
+//if(this->outputs[0].size() > 2)
+	Normalize(this->Z);
 }
 
 

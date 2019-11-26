@@ -21,6 +21,9 @@ public:
 	vector<vector<vector<float>>>	dcz;
 	vector<vector<vector<float>>>	dw;				// delta w to change weights after backpropagation
 	int		channels;					// number of channels for the input
+	int		input_size;
+	int		channel_size;
+	int		batch_size;
 	int		height;						// image height
 	int		width;						// image width
 	int		num_filters;				//

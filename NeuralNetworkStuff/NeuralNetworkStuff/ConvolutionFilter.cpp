@@ -55,8 +55,8 @@ ConvolutionFilter::ConvolutionFilter(
 	this->layer_error.resize(batch);
 	for (int i = 0; i < batch; i++)
 	{
-		this->layer_error[i].resize(num_filters);
-		for (int j = 0; j < num_filters; j++)
+		this->layer_error[i].resize(channels);
+		for (int j = 0; j < channels; j++)
 			this->layer_error[i][j].resize(height * width);	// input size;
 	}
 
@@ -105,6 +105,9 @@ void ConvolutionFilter::InitializeKernel()
 void ConvolutionFilter::LoadImage(vector<vector<vector<float>>> *input)
 {
 	this->input = input;
+	batch_size = this->input->size();
+	channel_size = this->input[0][0].size();
+	input_size = this->input[0][0][0].size();
 }
 
 /* Zero Pad
@@ -239,9 +242,9 @@ void ConvolutionFilter::Backpropagation(vector<vector<vector<float>>> &Error)
 			for (int k = 0; k < kernel_tsize; k++)
 				this->dw[i][j][k] = 0;	// Zero the values out
 	// Reset This layer's error
-	for (int i = 0; i < this->output.size(); i++)
-		for (int j = 0; j < this->output[0].size(); j++)
-			for (int k = 0; k < this->output[0][0].size(); k++)
+	for (int i = 0; i < this->batch_size; i++)
+		for (int j = 0; j < this->channel_size; j++)
+			for (int k = 0; k < this->input_size; k++)
 				this->layer_error[i][j][k] = 0;
 	// Activation function first
 	// DRelu
@@ -251,7 +254,7 @@ void ConvolutionFilter::Backpropagation(vector<vector<vector<float>>> &Error)
 				this->dcz[i][k][j] = Error[i][k][j] * DRelu(output[i][k][j]);		// Error component * by the Z value (before activation)			
 	// Deconvolve
 	// Perform de-convolution through each filter
-	concurrency::parallel_for(0, (int)this->input->size(), [&](float con_i) {
+	concurrency::parallel_for(0, (int)batch_size, [&](float con_i) {
 		//for (int i = 0; i < this->input->size(); i++)
 		for (int j = 0; j < this->num_filters; j++)
 			DeConvolve(con_i, j, Error); });
@@ -259,6 +262,7 @@ void ConvolutionFilter::Backpropagation(vector<vector<vector<float>>> &Error)
 	// Normalize Delta weights to prevent explosion in big images
 	// Mess around with normalization to see if we can get better output
 	//
+	Normalize(this->layer_error);
 	Normalize(this->dw);
 	for(int i = 0; i < this->dw.size(); i++)
 		for(int j = 0; j < this->dw[i].size(); j++)
