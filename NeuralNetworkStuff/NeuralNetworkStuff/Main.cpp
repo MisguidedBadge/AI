@@ -72,9 +72,9 @@ int main()
 	// Fully Connected Layers /////////////////////////////////////
 	// Layer Definition ///////////////////////////////////////////
 	Layer* hidden2 = new Layer(200, 100, unroll_size, batch, unroll_vec, Relu, alpha);
-	Layer* hidden1 = new Layer(100, outputs, 200, batch, hidden2->outputs, Relu, alpha);
-	//Layer* hidden = new Layer(3, outputs, 100, batch,  hidden1->outputs, Relu, alpha);
-	Layer* output_layer = new Layer(outputs, outputs, 100, batch, hidden1->outputs, Relu, alpha);
+	Layer* hidden1 = new Layer(100, 3, 200, batch, hidden2->outputs, Relu, alpha);
+	Layer* hidden = new Layer(3, outputs, 100, batch,  hidden1->outputs, Relu, alpha);
+	Layer* output_layer = new Layer(outputs, outputs, 3, batch, hidden->outputs, Relu, alpha);
 	// CNN Layers//////////////////////////////////////////////////
 	ConvolutionFilter* cnn = new ConvolutionFilter(batch, num_channels, height, width, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	ConvolutionFilter* cnn2 = new ConvolutionFilter(batch, num_filters, height/2, width/2, num_filters, 3, stride_x, stride_y, Relu, alpha);
@@ -82,8 +82,8 @@ int main()
 	ConvolutionFilter* cnn4 = new ConvolutionFilter(batch, num_filters, height/2, width/2, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	// Weight init ////////////////////////////////////////////////
 	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(100, outputs);
-	//hidden->InitializeWeights(100, 3);
+	output_layer->InitializeWeights(3, outputs);
+	hidden->InitializeWeights(100, 3);
 	hidden1->InitializeWeights(200, 100);
 	hidden2->InitializeWeights(unroll_size, 200);
 	cnn->InitializeKernel();
@@ -111,7 +111,7 @@ int main()
 	vector<int> RanNeg;						// Random Pool Non-Pedestrian
 											
 //////////////////////*		Preprocessing Stuff		*///////////////////////////////////////
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 200; i++) {
 		// 50/50 split of Pedestrian and Non-Pedestrian
 		RanPos = RandomSelection(batch / 2, pool);
 		RanNeg = RandomSelection(batch / 2, pool);
@@ -148,7 +148,7 @@ int main()
 		/* Normalize image channels to make it easier for weight updates
 	
 	*/
-		Normalize(input);
+		Normalize(input, 0);
 		////////// START Layer Stuff //////////////////////////////////////////////////////
 		//////////////// CNN Operations ///////////////////////////////////////
 		
@@ -189,10 +189,10 @@ int main()
 		hidden1->LoadInput(hidden2->outputs);
 		hidden1->FeedForward();
 
-		//hidden->LoadInput(hidden1->outputs);
-		//hidden->FeedForward();
+		hidden->LoadInput(hidden1->outputs);
+		hidden->FeedForward();
 
-		output_layer->LoadInput(hidden1->outputs);
+		output_layer->LoadInput(hidden->outputs);
 		output_layer->FeedForward();
 
 		// Determine error
@@ -207,8 +207,8 @@ int main()
 		}
 		/////////////// Back Propagation //////////////////////////////////////////////
 		output_layer->BackPropagation(error);
-		//hidden->BackPropagation(output_layer->weights, output_layer->DCZ);
-		hidden1->BackPropagation(output_layer->weights, output_layer->DCZ);
+		hidden->BackPropagation(output_layer->weights, output_layer->DCZ);
+		hidden1->BackPropagation(hidden->weights, hidden->DCZ);
 		hidden2->BackPropagation(hidden1->weights, hidden1->DCZ);
 		
 		/////////////// Pass error into convolutional Domanin ///////////////
@@ -224,7 +224,7 @@ int main()
 				sum = 0;
 			}
 		// Normalize the unrolling vector
-		Normalize(unroll_vec);
+		Normalize(unroll_vec, 1);
 		// Zero out image
 		for (int i = 0; i < image.size(); i++)
 			for (int j = 0; j < image[i].size(); j++)
@@ -247,7 +247,7 @@ int main()
 		image = BackPropMax(cnn2->layer_error, num_filters, 2, height / 2, width / 2);
 		cnn->Backpropagation(image);
 		// Update Layer Weights
-		//hidden->UpdateWeights();
+		hidden->UpdateWeights();
 		hidden2->UpdateWeights();
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
