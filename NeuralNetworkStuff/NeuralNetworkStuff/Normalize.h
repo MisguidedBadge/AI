@@ -3,8 +3,8 @@
 
 #include "libraries.h"
 
-void Normalize(vector<vector<float>>& input, int option);
-void Normalize(vector<vector<vector<float>>>& input, int option);
+void Normalize(vector<vector<float>>& input, int option, int global);
+void Normalize(vector<vector<vector<float>>>& input, int option, int global);
 
 
 #endif
