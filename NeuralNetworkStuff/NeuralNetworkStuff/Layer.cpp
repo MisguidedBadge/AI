@@ -97,9 +97,9 @@ for( int b = 0; b < this->inputs.size(); b++){
 		}
 	}
   }
- // Try normalizing data for each Z
+// // Try normalizing data for each Z
 if(this->outputs[0].size() > 2)
-	Normalize(this->Z, 1);
+	Normalize(this->Z, 0, 0);
 }
 
 
@@ -162,11 +162,11 @@ void Layer::BackPropagation(vector<vector<float>> &weights, vector<vector<float>
 			this->DCW[i][j] = avg_err;
 		}
 	}
-	Normalize(this->DCZ, 1);
-	Normalize(this->DCW, 1);
-	for (int i = 0; i < this->DCW.size(); i++)
-		for (int j = 0; j < this->DCW[i].size(); j++)
-			this->DCW[i][j] = this->DCW[i][j];
+	Normalize(this->DCZ, 1, 0);
+	Normalize(this->DCW, 1, 0);
+	//for (int i = 0; i < this->DCW.size(); i++)
+	//	for (int j = 0; j < this->DCW[i].size(); j++)
+	//		this->DCW[i][j] = this->DCW[i][j] * 10;
 }
 		//});
 

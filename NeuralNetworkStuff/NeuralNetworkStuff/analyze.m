@@ -1,21 +1,24 @@
 %img_mat = table2array(test2Layer2);
-T = readtable('weights.dat');
-
-for i = 1:24
-    select = T(i, 1:7500);
-
-    img_mat = table2array(select);
-
-    TS = reshape(img_mat, [125 60]);
-
-
-    maximum = max(TS, [], 'all');
-
-    minimum = min(TS, [], 'all');
-
-    TS = 255 * (TS - minimum)/(maximum - minimum);
-
-    subplot(2,12,i);
-    imagesc(TS);
+T = dlmread('weights.dat', ';');
+c = 1;
+for i = 55:55
+%     select = T(i, 1:9);
+%     select = T(i, 1:30000);
+%       select = T(i, 1:7500);
+      select = T(i, 1:100);
+   % img_mat = table2array(select);
+     plot(select);
+%     TS = reshape(select, [3 3]);
+%       TS = reshape(select, [120 250]);
+%     TS = reshape(select, [60 125]);
+%     maximum = max(TS, [], 'all');
+% 
+%     minimum = min(TS, [], 'all');
+% 
+%     TS = 255 * (TS - minimum)/(maximum - minimum);
+% 
+%     subplot(3,4,c);
+%     imagesc(TS);
+%     c = c + 1;
     %imshow(TS, [0 255]);
 end

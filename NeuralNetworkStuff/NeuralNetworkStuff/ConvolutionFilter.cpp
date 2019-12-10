@@ -161,7 +161,7 @@ void ConvolutionFilter::FeedForward()
 			for (int j = 0; j < this->output[0][0].size(); j++)
 				this->output[k][i][j] = (float)this->Activate(this->output[k][i][j]);
 	// Normalize the output
-	Normalize(this->output, 1);
+	Normalize(this->output, 1, 0);
 }
 
 /* Convolve the Input
@@ -262,12 +262,12 @@ void ConvolutionFilter::Backpropagation(vector<vector<vector<float>>> &Error)
 	// Normalize Delta weights to prevent explosion in big images
 	// Mess around with normalization to see if we can get better output
 	//
-	Normalize(this->layer_error, 1);
-	Normalize(this->dw, 1);
-	for(int i = 0; i < this->dw.size(); i++)
-		for(int j = 0; j < this->dw[i].size(); j++)
-			for(int k = 0; k < this->dw[i][j].size(); k++)
-				this->dw[i][j][k] = this->dw[i][j][k];
+	Normalize(this->layer_error, 1, 0);
+	Normalize(this->dw, 1, 0);
+	//for(int i = 0; i < this->dw.size(); i++)
+	//	for(int j = 0; j < this->dw[i].size(); j++)
+	//		for(int k = 0; k < this->dw[i][j].size(); k++)
+	//			this->dw[i][j][k] = this->dw[i][j][k] * 10;
 
 
 } 

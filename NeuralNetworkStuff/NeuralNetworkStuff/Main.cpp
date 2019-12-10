@@ -25,11 +25,13 @@ int main()
 	int unroll_size;
 	int outputs = 2;
 	int divider;
+	int threshold = 0;
 	float max;
 	float sum;
 	float min;
 	float total;
-	float alpha = 0.0005;
+	vector<float> graph_Error;
+	float alpha = 0.01;
 	string test_path_ped = "Testing_Data/PedTest/";
 	string test_path_non = "Testing_Data/NonPedTest/";
 	string train_path_ped = "Training_Data/Peds/";
@@ -40,7 +42,7 @@ int main()
 	width = 120;
 	nk1 = 1;
 	ks1 = 4;
-	num_filters = 2;
+	num_filters = 1;
 	stride_x = 1;
 	stride_y = 1;
 	unroll_size = 300 * num_filters;
@@ -73,9 +75,9 @@ int main()
 	// Fully Connected Layers /////////////////////////////////////
 	// Layer Definition ///////////////////////////////////////////
 	Layer* hidden2 = new Layer(200, 100, unroll_size, batch, unroll_vec, Relu, alpha);
-	Layer* hidden1 = new Layer(100, 3, 200, batch, hidden2->outputs, Relu, alpha);
-	Layer* hidden = new Layer(3, outputs, 100, batch,  hidden1->outputs, Relu, alpha);
-	Layer* output_layer = new Layer(outputs, outputs, 3, batch, hidden->outputs, Relu, alpha);
+	Layer* hidden1 = new Layer(100, 50, 200, batch, hidden2->outputs, Relu, alpha);
+	Layer* hidden = new Layer(50, outputs, 100, batch,  hidden1->outputs, Relu, alpha);
+	Layer* output_layer = new Layer(outputs, outputs, 50, batch, hidden->outputs, Relu, alpha);
 	// CNN Layers//////////////////////////////////////////////////
 	ConvolutionFilter* cnn = new ConvolutionFilter(batch, num_channels, height, width, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	ConvolutionFilter* cnn2 = new ConvolutionFilter(batch, num_filters, height/2, width/2, num_filters, 3, stride_x, stride_y, Relu, alpha);
@@ -83,8 +85,8 @@ int main()
 	ConvolutionFilter* cnn4 = new ConvolutionFilter(batch, num_filters, height/2, width/2, num_filters, 3, stride_x, stride_y, Relu, alpha);
 	// Weight init ////////////////////////////////////////////////
 	vector<vector<float>> weights, weights2;
-	output_layer->InitializeWeights(3, outputs);
-	hidden->InitializeWeights(100, 3);
+	output_layer->InitializeWeights(50, outputs);
+	hidden->InitializeWeights(100, 50);
 	hidden1->InitializeWeights(200, 100);
 	hidden2->InitializeWeights(unroll_size, 200);
 	cnn->InitializeKernel();
@@ -112,17 +114,20 @@ int main()
 	vector<int> RanNeg;						// Random Pool Non-Pedestrian
 											
 //////////////////////*		Preprocessing Stuff		*///////////////////////////////////////
-	for (int i = 0; i < end; i++) {
+	for (int e = 0; e < end; e++) {
 
-		if (i == end - 1)
+		if (e == end - 1)
 		{
-			RanPos = { 1, 2, 3, 4, 5, 6 };
-			RanNeg = { 1, 2, 3, 4, 5, 6 };
+			RanPos = { 0, 1, 2, 3, 4, 5 };
+			RanNeg = { 0, 1, 2, 3, 4, 5 };
 
 		}
-		// 50/50 split of Pedestrian and Non-Pedestrian
-		RanPos = RandomSelection(batch / 2, pool);
-		RanNeg = RandomSelection(batch / 2, pool);
+		else 
+		{
+			// 50/50 split of Pedestrian and Non-Pedestrian
+			RanPos = RandomSelection(batch / 2, pool);
+			RanNeg = RandomSelection(batch / 2, pool);
+		}
 		//RanPos = { 1, 2, 3, 4, 5, 6 };
 		//RanNeg = { 1, 2, 3, 4, 5, 6 };
 
@@ -130,7 +135,11 @@ int main()
 		for (int i = 0; i < batch; i++)
 		{
 			// Negative first then Postive
-			if (i < batch / 2)
+			if( e == end - 1 && i < batch / 2)
+				imageName = test_path_non + "I" + std::to_string(RanNeg[i]) + ".jpg";
+			else if(e == end - 1)
+				imageName = test_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)]) + ".jpg";
+			else if (i < batch / 2)
 				imageName = train_path_non + "I" + std::to_string(RanNeg[i]) + ".jpg";
 			else
 				imageName = train_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)]) + ".jpg";
@@ -156,7 +165,7 @@ int main()
 		/* Normalize image channels to make it easier for weight updates
 	
 	*/
-		Normalize(input, 0);
+		Normalize(input, 0 ,0);
 		////////// START Layer Stuff //////////////////////////////////////////////////////
 		//////////////// CNN Operations ///////////////////////////////////////
 		
@@ -170,7 +179,7 @@ int main()
 		cnn2->LoadImage(&image);
 		cnn2->FeedForward();
 		image = cnn2->Output();
-		/// CNN 3 ///
+		 //CNN 3 ///
 		cnn3->LoadImage(&image);
 		cnn3->FeedForward();
 		image = cnn3->Output();
@@ -203,8 +212,6 @@ int main()
 		output_layer->LoadInput(hidden->outputs);
 		output_layer->FeedForward();
 
-		if (i == end - 1)
-			break;
 
 		// Determine error
 		for (int b = 0; b < batch; b++)
@@ -214,8 +221,11 @@ int main()
 				error[b][i] = output_layer->outputs[b][i] - targets[b][i];
 				
 			}
-			total += abs(error[b][0]);
+		
+		total += abs(error[b][0]);
 		}
+		if (e == end - 1)
+			break;
 		/////////////// Back Propagation //////////////////////////////////////////////
 		output_layer->BackPropagation(error);
 		hidden->BackPropagation(output_layer->weights, output_layer->DCZ);
@@ -235,7 +245,7 @@ int main()
 				sum = 0;
 			}
 		// Normalize the unrolling vector
-		Normalize(unroll_vec, 1);
+		Normalize(unroll_vec, 1, 0);
 		// Zero out image
 		for (int i = 0; i < image.size(); i++)
 			for (int j = 0; j < image[i].size(); j++)
@@ -263,11 +273,11 @@ int main()
 		hidden1->UpdateWeights();
 		output_layer->UpdateWeights();
 		cnn->UpdateWeights();
-		cnn2->UpdateWeights();
-		cnn3->UpdateWeights();
+		//cnn2->UpdateWeights();
+		//cnn3->UpdateWeights();
 		cnn4->UpdateWeights();
 		// Print Error
-		cout << "Epoch: " << i << endl;
+		cout << "Epoch: " << e << endl;
 		cout << "Output: ";
 		for (int i = 0; i < output_layer->outputs.size(); i++)
 			cout << output_layer->outputs[i][0] << "; ";
@@ -279,9 +289,15 @@ int main()
 		cout << "Error: " << total << endl;
 		cout << "CNN Weight: " << cnn->kernels[0][0][1] << endl;
 		cout << "Hidden Layer 1 weight: " << hidden1->weights[0][1] << endl;
-		testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;
+		/*testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;*/
+		graph_Error.push_back(total);
+		if (total == 0)
+			threshold++;
+		else
+			threshold = 0;
 
-
+		if (threshold == 10)
+			e = end - 2;
 			
 	}
 	// Testing //
@@ -307,6 +323,105 @@ int main()
 			testfile << endl;
 		}
 
+	}
+	 
+	for (int j = 0; j < cnn2->output.size(); j++)
+	{
+		for (int i = 0; i < cnn2->output[0].size(); i++)
+		{
+			for (int k = 0; k < cnn2->output[0][0].size(); k++)
+			{
+				testfile << cnn2->output[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	// 
+	for (int j = 0; j < cnn3->output.size(); j++)
+	{
+		for (int i = 0; i < cnn3->output[0].size(); i++)
+		{
+			for (int k = 0; k < cnn3->output[0][0].size(); k++)
+			{
+				testfile << cnn3->output[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	 
+	for (int j = 0; j < cnn4->output.size(); j++)
+	{
+		for (int i = 0; i < cnn4->output[0].size(); i++)
+		{
+			for (int k = 0; k < cnn4->output[0][0].size(); k++)
+			{
+				testfile << cnn4->output[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	for (int j = 0; j < cnn->kernels.size(); j++)
+	{
+		for (int i = 0; i < cnn->kernels[0].size(); i++)
+		{
+			for (int k = 0; k < cnn->kernels[0][0].size(); k++)
+			{
+				testfile << cnn->kernels[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	for (int j = 0; j < cnn2->kernels.size(); j++)
+	{
+		for (int i = 0; i < cnn2->kernels[0].size(); i++)
+		{
+			for (int k = 0; k < cnn2->kernels[0][0].size(); k++)
+			{
+				testfile << cnn2->kernels[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	for (int j = 0; j < cnn3->kernels.size(); j++)
+	{
+		for (int i = 0; i < cnn3->kernels[0].size(); i++)
+		{
+			for (int k = 0; k < cnn3->kernels[0][0].size(); k++)
+			{
+				testfile << cnn3->kernels[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	for (int j = 0; j < cnn4->kernels.size(); j++)
+	{
+		for (int i = 0; i < cnn4->kernels[0].size(); i++)
+		{
+			for (int k = 0; k < cnn4->kernels[0][0].size(); k++)
+			{
+				testfile << cnn4->kernels[j][i][k];
+				testfile << ";";
+			}
+			testfile << endl;
+		}
+
+	}
+	for (int i = 0; i < graph_Error.size(); i++)
+	{
+		testfile << graph_Error[i];
+		testfile << ";";
 	}
 	testfile.close();
 
