@@ -17,7 +17,7 @@ int main()
 	int width = 0;		// Image width
 	int nk1 = 0;		// Number of Kernels each cnn layer
 	int ks1 = 0;		// Kernel Sizes of each layer
-	int end = 100;
+	int end = 1000;
 	int num_channels;
 	int num_filters;
 	int stride_x;
@@ -31,7 +31,7 @@ int main()
 	float min;
 	float total;
 	vector<float> graph_Error;
-	float alpha = 0.01;
+	float alpha = 0.005;
 	string test_path_ped = "Testing_Data/PedTest/";
 	string test_path_non = "Testing_Data/NonPedTest/";
 	string train_path_ped = "Training_Data/Peds/";
@@ -42,7 +42,7 @@ int main()
 	width = 120;
 	nk1 = 1;
 	ks1 = 4;
-	num_filters = 1;
+	num_filters = 3;
 	stride_x = 1;
 	stride_y = 1;
 	unroll_size = 300 * num_filters;
@@ -114,7 +114,7 @@ int main()
 	vector<int> RanNeg;						// Random Pool Non-Pedestrian
 											
 //////////////////////*		Preprocessing Stuff		*///////////////////////////////////////
-	for (int e = 0; e < end; e++) {
+	for (int e = 1; e < end; e++) {
 
 		if (e == end - 1)
 		{
@@ -136,13 +136,13 @@ int main()
 		{
 			// Negative first then Postive
 			if( e == end - 1 && i < batch / 2)
-				imageName = test_path_non + "I" + std::to_string(RanNeg[i]) + ".jpg";
+				imageName = test_path_non + "I" + std::to_string(RanNeg[i] + 100) + ".jpg";
 			else if(e == end - 1)
-				imageName = test_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)]) + ".jpg";
+				imageName = test_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)] + 100) + ".jpg";
 			else if (i < batch / 2)
-				imageName = train_path_non + "I" + std::to_string(RanNeg[i]) + ".jpg";
+				imageName = train_path_non + "I" + std::to_string(RanNeg[i] + 100) + ".jpg";
 			else
-				imageName = train_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)]) + ".jpg";
+				imageName = train_path_ped + "I" + std::to_string(RanPos[i - (batch / 2)] + 100) + ".jpg";
 
 			matimage = cv::imread(imageName, cv::IMREAD_COLOR);
 			cv::resize(matimage, matimage, size);
@@ -218,6 +218,9 @@ int main()
 		{
 			for (int i = 0; i < 2; i++)
 			{
+				//if (output_layer->outputs[b][i] > 1)
+				//	output_layer->outputs[b][i] = 1;
+
 				error[b][i] = output_layer->outputs[b][i] - targets[b][i];
 				
 			}
@@ -289,15 +292,19 @@ int main()
 		cout << "Error: " << total << endl;
 		cout << "CNN Weight: " << cnn->kernels[0][0][1] << endl;
 		cout << "Hidden Layer 1 weight: " << hidden1->weights[0][1] << endl;
+		cout << "Learning Rate: " << alpha << endl;
 		/*testfile << output_layer->error << ',' << output_layer->weights[0][0] << "," << output_layer->weights[0][1] << "," << output_layer->weights[1][0] << "," << output_layer->weights[1][1] << std::endl;*/
 		graph_Error.push_back(total);
-		if (total == 0)
+
+		if (e % 50 == 0)
+			alpha = alpha * 0.85;
+		/*if (total == 0)
 			threshold++;
 		else
 			threshold = 0;
 
 		if (threshold == 10)
-			e = end - 2;
+			e = end - 2;*/
 			
 	}
 	// Testing //
